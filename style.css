@@ -251,12 +251,14 @@ a,
 #menu-tooltip {
     position: fixed;
     background: rgba(0, 0, 0, 0.95);
-    border: 1px solid #777;
-    padding: 10px 15px;
+    border: 1px solid #555;
+    border-left: 5px solid #ffaa00;
+    /* Yellow accent like a tip box */
+    padding: 12px 18px;
     z-index: 9999;
     pointer-events: none;
-    max-width: 350px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+    max-width: 380px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
     display: none;
     flex-direction: column;
 }
@@ -271,10 +273,11 @@ a,
 
 #menu-tooltip p {
     margin: 5px 0 0 0;
-    color: #bbb;
+    color: #cecece;
+    /* Greyish text */
     font-size: 0.9vw;
-    line-height: 1.3;
-    font-family: sans-serif;
+    line-height: 1.4;
+    font-family: Arial, sans-serif;
 }
 
 #info-toggle-container {
@@ -698,7 +701,8 @@ a,
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 150;
+    z-index: 10000;
+    /* Visible over everything including blackouts */
 }
 
 #top-left {
@@ -865,4 +869,28 @@ a,
     opacity: 0.95;
     mix-blend-mode: multiply;
     /* Optional: for a gloomier look */
+}
+
+/* FIREWORKS CSS */
+.firework {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 3500;
+    animation: explode 1s ease-out forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(0.1);
+        opacity: 0;
+    }
 }

@@ -172,6 +172,8 @@ function initMenu() {
 
     // Mousemove for tooltip following
     document.addEventListener('mousemove', (e) => {
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
         if (!menuEl.classList.contains('hidden')) {
             updateTooltipPos(e);
         }
@@ -225,6 +227,8 @@ function showTooltip(idx) {
     document.getElementById('tooltip-name').innerText = char.name;
     document.getElementById('tooltip-desc').innerText = char.desc;
     tooltipEl.style.display = 'flex';
+    // Position it immediately
+    updateTooltipPos({ clientX: lastMouseX, clientY: lastMouseY });
 }
 
 function hideTooltip() {
@@ -562,15 +566,22 @@ function startScoreTally(scoreId, rankId, isHigh) {
 
     try { winAudio.play().catch(e => { console.log("Win audio play blocked", e); }); } catch (e) { }
 
-    // Velocidad del contador (unos 2-3 segundos total)
-    let step = Math.max(1, Math.floor(targetScore / 100)); // Incrementar de 1 en 1 si es bajo
-    if (targetScore > 5000) step = Math.floor(targetScore / 150);
+    // Tally duration: about 10 seconds
+    const TALLY_DURATION_MS = 10000;
+    const UPDATE_INTERVAL_MS = 30;
+    const totalSteps = TALLY_DURATION_MS / UPDATE_INTERVAL_MS;
+    let step = Math.max(1, targetScore / totalSteps);
+
+    let fireworksInterval = setInterval(() => {
+        if (currentDisplayScore < targetScore) createFirework();
+    }, 400);
 
     let interval = setInterval(() => {
         currentDisplayScore += step;
         if (currentDisplayScore >= targetScore) {
             currentDisplayScore = targetScore;
             clearInterval(interval);
+            clearInterval(fireworksInterval);
             // Salto al final de la música (los últimos 4 segundos)
             try {
                 if (winAudio.duration > 4) {
@@ -578,9 +589,39 @@ function startScoreTally(scoreId, rankId, isHigh) {
                 }
             } catch (e) { }
         }
-        scoreEl.innerText = "Score: " + currentDisplayScore;
-        updateRankLabel(rankEl, currentDisplayScore);
-    }, 25);
+        scoreEl.innerText = "Score: " + Math.floor(currentDisplayScore);
+        updateRankLabel(rankEl, Math.floor(currentDisplayScore));
+    }, UPDATE_INTERVAL_MS);
+}
+
+function createFirework() {
+    const screen = document.querySelector(currentScore > highScore ? '#new-highscore-screen' : '#win-screen');
+    if (!screen || screen.classList.contains('hidden')) return;
+
+    const fireworkCount = 12;
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    for (let i = 0; i < fireworkCount; i++) {
+        const p = document.createElement('div');
+        p.className = 'firework';
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.backgroundColor = color;
+
+        const angle = (Math.PI * 2 / fireworkCount) * i;
+        const velocity = 50 + Math.random() * 100;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity;
+
+        p.style.setProperty('--tx', tx + 'px');
+        p.style.setProperty('--ty', ty + 'px');
+
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 1000);
+    }
 }
 
 function updateRankLabel(el, score) {
