@@ -208,20 +208,26 @@ a,
 
 .animatronic-slot {
     position: relative;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid #333;
 }
 
 .animatronic-slot:hover {
+    border-color: #fff;
     background-color: rgba(255, 255, 255, 0.1);
 }
 
 .ai-level {
     position: absolute;
-    bottom: 2px;
+    bottom: 0px;
     right: 2px;
     color: #ccffcc;
-    font-size: 1.2vw;
+    font-size: 1.1vw;
     font-weight: bold;
     pointer-events: none;
+    text-shadow: 1px 1px 2px black;
+    z-index: 5;
 }
 
 .ai-level.active {
@@ -229,7 +235,7 @@ a,
 }
 
 .ai-level.max {
-    color: red;
+    color: #f00;
 }
 
 #audio-hint {
@@ -245,6 +251,7 @@ a,
     pointer-events: none;
     animation: blink 2s infinite;
 }
+
 
 #menu-tooltip {
     position: fixed;
@@ -276,6 +283,22 @@ a,
     font-family: Arial, sans-serif;
 }
 
+
+#info-toggle-container {
+    color: white;
+    font-size: 0.9vw;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 90%;
+}
+
+#char-info-toggle {
+    cursor: url('cursor.png'), pointer;
+    width: 18px;
+    height: 18px;
+}
 
 #side-panel {
     position: absolute;
