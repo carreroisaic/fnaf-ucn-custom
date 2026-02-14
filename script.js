@@ -114,6 +114,7 @@ const camLabelEl = document.getElementById('cam-label');
 const pauseMenuEl = document.getElementById('pause-menu');
 const tooltipEl = document.getElementById('menu-tooltip');
 const charInfoToggle = document.getElementById('char-info-toggle');
+const loadingScreen = document.getElementById('loading-screen');
 
 // AUDIO ELEMENTS
 const bgmMenu = document.getElementById('bgm-menu');
@@ -260,51 +261,57 @@ function showInstructions() {
 
 function startGame() {
     instructionsScreen.classList.add('hidden');
-    officeEl.classList.remove('hidden');
-    bgmMenu.pause();
+    loadingScreen.classList.remove('hidden'); // Mostrar carga primero
 
-    // Música Aleatoria
-    let rnd = Math.floor(Math.random() * bgmGames.length);
-    currentBgm = bgmGames[rnd];
-    if (currentBgm) {
-        currentBgm.currentTime = 0;
-        currentBgm.volume = 0.5;
-        currentBgm.play().catch(e => { console.log("Audio play blocked", e); });
-    }
+    // Esperar 3 segundos antes de entrar a la oficina
+    setTimeout(() => {
+        loadingScreen.classList.add('hidden');
+        officeEl.classList.remove('hidden');
+        bgmMenu.pause();
 
-    // Resetear Estado de la Noche
-    state.power = 100.0;
-    state.temp = 60;
-    state.usage = 1;
-    state.timeSeconds = 0;
-    state.timeDeciseconds = 0;
-    state.fan = false;
-    state.flashlight = false;
-    state.mask = false;
-    state.monitor = false;
-    state.ventilationBroken = false;
-    state.currentCam = 1;
-    state.paused = false;
-    state.doors = { left: false, right: false, top: false, side: false };
+        // Música Aleatoria
+        let rnd = Math.floor(Math.random() * bgmGames.length);
+        currentBgm = bgmGames[rnd];
+        if (currentBgm) {
+            currentBgm.currentTime = 0;
+            currentBgm.volume = 0.5;
+            currentBgm.play().catch(e => { console.log("Audio play blocked", e); });
+        }
 
-    // Resetear Visuales
-    fanBlades.className = 'fan-stopped';
-    maskOverlay.className = 'mask-hidden';
-    monitorEl.className = 'monitor-hidden';
-    blackoutOverlay.className = '';
-    ventWarnLeft.classList.add('hidden');
-    ventWarnRight.classList.add('hidden');
-    tempEl.classList.remove('critical');
+        // Resetear Estado de la Noche
+        state.power = 100.0;
+        state.temp = 60;
+        state.usage = 1;
+        state.timeSeconds = 0;
+        state.timeDeciseconds = 0;
+        state.fan = false;
+        state.flashlight = false;
+        state.mask = false;
+        state.monitor = false;
+        state.ventilationBroken = false;
+        state.currentCam = 1;
+        state.paused = false;
+        state.doors = { left: false, right: false, top: false, side: false };
 
-    // Resetear Puertas
-    Object.keys(doorsEl).forEach(d => doorsEl[d].classList.remove('closed'));
+        // Resetear Visuales
+        fanBlades.className = 'fan-stopped';
+        maskOverlay.className = 'mask-hidden';
+        monitorEl.className = 'monitor-hidden';
+        blackoutOverlay.className = '';
+        ventWarnLeft.classList.add('hidden');
+        ventWarnRight.classList.add('hidden');
+        tempEl.classList.remove('critical');
 
-    startIntervals();
+        // Resetear Puertas
+        Object.keys(doorsEl).forEach(d => doorsEl[d].classList.remove('closed'));
 
-    // Event Listeners de Juego
-    document.addEventListener('keydown', handleInput);
-    document.addEventListener('keyup', handleRelease);
-    document.addEventListener('mousemove', handleMouseMoveOffice);
+        startIntervals();
+
+        // Event Listeners de Juego
+        document.addEventListener('keydown', handleInput);
+        document.addEventListener('keyup', handleRelease);
+        document.addEventListener('mousemove', handleMouseMoveOffice);
+    }, 3000); // 3 segundos exactos
 }
 
 function startIntervals() {
