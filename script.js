@@ -86,7 +86,11 @@ let state = {
     currentCam: 1,
     timeSeconds: 0,
     timeDeciseconds: 0,
-    doors: { left: false, right: false, top: false, side: false }
+    doors: { left: false, right: false, top: false, side: false },
+    omc: { active: false, fishPos: 0, fishDir: 1, timer: 0 },
+    monitorDisabled: 0, // Segundos que le quedan al monitor bloqueado
+    freddyPos: 0, // 0: Lejos, 1: Cerca, 2: En la puerta
+    freddyTimer: 0
 };
 
 // DOM ELEMENTS
@@ -292,6 +296,8 @@ function startGame() {
         state.currentCam = 1;
         state.paused = false;
         state.doors = { left: false, right: false, top: false, side: false };
+        state.omc = { active: false, fishPos: 0, fishDir: 1, timer: 0 };
+        state.monitorDisabled = 0;
 
         // Resetear Visuales
         fanBlades.className = 'fan-stopped';
@@ -301,6 +307,8 @@ function startGame() {
         ventWarnLeft.classList.add('hidden');
         ventWarnRight.classList.add('hidden');
         tempEl.classList.remove('critical');
+        document.getElementById('omc-minigame').classList.add('hidden');
+
 
         // Resetear Puertas
         Object.keys(doorsEl).forEach(d => doorsEl[d].classList.remove('closed'));
@@ -370,7 +378,13 @@ function handleInput(e) {
             updateFlashlightVisuals(lastMouseX, lastMouseY);
         }
     }
-    if (e.code === 'KeyS' || e.code === 'KeyC') toggleMonitor();
+    if (e.code === 'KeyS' || e.code === 'KeyC') {
+        if (state.omc.active && e.code === 'KeyC') {
+            catchFish();
+        } else {
+            toggleMonitor();
+        }
+    }
 
     if (e.code === 'KeyA') toggleDoor('left');
     if (e.code === 'KeyD') toggleDoor('right');
@@ -434,7 +448,7 @@ function toggleMask() {
 }
 
 function toggleMonitor() {
-    if (state.mask || state.paused) return;
+    if (state.mask || state.paused || state.monitorDisabled > 0) return;
     state.monitor = !state.monitor;
     monitorEl.className = state.monitor ? '' : 'monitor-hidden';
     if (state.monitor) {
@@ -483,6 +497,122 @@ function gameTick() {
 
     // Aumento de temperatura si el fan está apagado
     if (!state.fan && state.temp < 120) state.temp += 1;
+
+    // AI TICKS
+    omcTick();
+    freddyAI();
+}
+
+function omcTick() {
+    const level = roster[27]; // OMC es el índice 27 (Old Man Consequences)
+    if (level === 0) return;
+
+    if (state.omc.active) {
+        // Mover pez
+        state.omc.fishPos += 3 * state.omc.fishDir;
+        if (state.omc.fishPos > 95 || state.omc.fishPos < 0) {
+            state.omc.fishDir *= -1;
+        }
+        document.getElementById('omc-fish').style.left = state.omc.fishPos + '%';
+
+        // Timer de fallo (si tarda más de 10 segundos)
+        state.omc.timer++;
+        if (state.omc.timer > 10) {
+            failOMC();
+        }
+    } else {
+        // Intento de aparición aleatoria
+        if (state.monitor && Math.random() < (level / 10000) * 1) {
+            triggerOMC();
+        }
+    }
+
+    // Monitor bloqueado
+    if (state.monitorDisabled > 0) {
+        state.monitorDisabled--;
+        if (state.monitorDisabled === 0) {
+            console.log("Monitor habilitado");
+        }
+    }
+}
+
+function triggerOMC() {
+    state.omc.active = true;
+    state.omc.fishPos = 0;
+    state.omc.fishDir = 1;
+    state.omc.timer = 0;
+    document.getElementById('omc-minigame').classList.remove('hidden');
+}
+
+function catchFish() {
+    // Catch zone está en 45% - 55%
+    if (state.omc.fishPos >= 40 && state.omc.fishPos <= 60) {
+        state.omc.active = false;
+        document.getElementById('omc-minigame').classList.add('hidden');
+        console.log("FISH CAUGHT!");
+    }
+}
+
+function failOMC() {
+    state.omc.active = false;
+    document.getElementById('omc-minigame').classList.add('hidden');
+    state.monitorDisabled = 10; // 10 segundos bloqueado
+    if (state.monitor) toggleMonitor();
+    alert("MONITOR DISABLED BY OMC!");
+}
+
+function freddyAI() {
+    const level = roster[0]; // Freddy es el índice 0
+    if (level === 0) return;
+
+    // Freddy se mueve cada 3 segundos aprox base
+    // Si la temperatura es alta (>100), se mueve el doble de rápido
+    let moveThreshold = (state.temp > 100) ? 2 : 4;
+
+    state.freddyTimer++;
+    if (state.freddyTimer >= moveThreshold) {
+        state.freddyTimer = 0;
+
+        // Intento de movimiento basado en nivel
+        if (Math.random() * 20 < level) {
+            if (state.freddyPos < 2) {
+                state.freddyPos++;
+                console.log("Freddy avanzó a pos: " + state.freddyPos);
+            } else {
+                // Está en la puerta
+                if (state.doors.left) {
+                    // Puerta cerrada, Freddy retrocede
+                    state.freddyPos = 0;
+                    console.log("Freddy rebotó en la puerta");
+                } else {
+                    // JUMPSCARE
+                    triggerJumpscare(0);
+                }
+            }
+        }
+    }
+}
+
+function triggerJumpscare(animIndex) {
+    stopIntervals();
+    if (currentBgm) currentBgm.pause();
+
+    const overlay = document.getElementById('jumpscare-overlay');
+    const img = document.getElementById('jumpscare-img');
+    const sfx = document.getElementById('sfx-jumpscare');
+
+    img.src = `jumpscare_${animIndex}.png`;
+    overlay.classList.remove('hidden');
+
+    try {
+        sfx.currentTime = 0;
+        sfx.play();
+    } catch (e) { }
+
+    setTimeout(() => {
+        alert("GAME OVER - " + CHAR_DATA[animIndex].name);
+        location.reload();
+    }, 2000);
 }
 
 function fastUpdateTick() {

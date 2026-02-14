@@ -910,3 +910,117 @@ a,
         opacity: 0;
     }
 }
+
+/* PANTALLA DE CARGA */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+}
+
+#loading-content {
+    text-align: center;
+}
+
+#loading-content h1 {
+    font-size: 5vw;
+    letter-spacing: 15px;
+    margin: 0;
+    font-weight: 900;
+}
+
+#loading-content p {
+    color: #444;
+    font-size: 1.2vw;
+    text-transform: uppercase;
+    margin-top: 10px;
+}
+
+.blink {
+    animation: blink-load 1s infinite alternate;
+}
+
+@keyframes blink-load {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0.3;
+    }
+}
+
+/* OLD MAN CONSEQUENCES */
+#omc-minigame {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(150, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 15000;
+}
+
+#omc-content {
+    background: #000;
+    border: 4px solid #f00;
+    padding: 20px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 0 20px #f00;
+    color: #f00;
+}
+
+#omc-header {
+    font-size: 2vw;
+    font-weight: bold;
+    margin-bottom: 20px;
+    letter-spacing: 5px;
+}
+
+#omc-pond {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    background: #200;
+    border: 2px solid #500;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+#omc-catch-zone {
+    position: absolute;
+    top: 0;
+    left: 45%;
+    width: 10%;
+    height: 100%;
+    background: rgba(255, 0, 0, 0.3);
+    border-left: 2px solid #f00;
+    border-right: 2px solid #f00;
+}
+
+#omc-fish {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translateY(-50%);
+    font-size: 30px;
+    will-change: left;
+}
+
+#omc-footer {
+    font-size: 1.2vw;
+    margin-top: 10px;
+    animation: blink 0.5s infinite alternate;
+}
