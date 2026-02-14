@@ -641,3 +641,12 @@ function updateRankLabel(el, score) {
 
 // Iniciar menú al cargar el script
 initMenu();
+
+function confirmReset() {
+    if (confirm("¿ESTÁS SEGURO DE QUE DESEAS BORRAR TU RÉCORD?")) {
+        localStorage.removeItem('fnaf_ucn_highscore');
+        highScore = 0;
+        highScoreValEl.innerText = "0";
+        alert("RÉCORD REINICIADO.");
+    }
+}

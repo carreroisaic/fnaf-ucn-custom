@@ -352,6 +352,22 @@ a,
     width: 90%;
 }
 
+#reset-highscore-btn {
+    background: #400;
+    color: #f88;
+    border: 1px solid #722;
+    font-family: inherit;
+    font-size: 0.8vw;
+    margin-top: 10px;
+    padding: 3px 8px;
+    width: 100%;
+}
+
+#reset-highscore-btn:hover {
+    background: #600;
+    color: white;
+}
+
 #go-button {
     background: green;
     color: white;
