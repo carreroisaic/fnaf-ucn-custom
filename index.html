@@ -4,39 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Custom Night - Web Edition</title>
+    <title>UCN Custom - Stable Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+    <!-- CARGA -->
     <div id="loading-screen" class="hidden">
         <div id="loading-content">
             <h1 class="blink">LOADING...</h1>
-            <p>Please wait</p>
         </div>
     </div>
 
+    <!-- MENÚ -->
     <div id="menu">
         <div id="roster-grid"></div>
 
         <div id="menu-side-panel">
             <div id="score-display">
-                VALUE: <span id="point-value">0</span><br>
-                HIGH SCORE: <span id="high-score-val">0</span>
+                SCORE: <span id="point-value">0</span><br>
+                BEST: <span id="high-score-val">0</span>
             </div>
 
             <div id="difficulty-controls">
-                <button onclick="setAll(0)">SET ALL 0</button>
-                <button onclick="setAll(10)">SET ALL 10</button>
-                <button onclick="setAll(20)">SET ALL 20</button>
+                <button onclick="setAll(0)">SET 0</button>
+                <button onclick="setAll(10)">SET 10</button>
+                <button onclick="setAll(20)">SET 20</button>
             </div>
 
             <button id="go-button" onclick="showInstructions()">GO!</button>
 
             <div id="menu-options" style="color:white; padding:10px;">
-                <label><input type="checkbox" id="char-info-toggle" checked> INFO</label>
-                <button id="reset-highscore-btn" onclick="confirmReset()">RESET</button>
+                <label><input type="checkbox" id="char-info-toggle" checked> SHOW INFO</label>
+                <button id="reset-highscore-btn" onclick="confirmReset()">RESET BEST</button>
             </div>
         </div>
 
@@ -46,27 +47,32 @@
         </div>
     </div>
 
+    <!-- INSTRUCCIONES -->
     <div id="instructions-screen" class="hidden">
         <div id="instr-content">
             <h1>CONTROLS</h1>
             <ul id="instr-list">
-                <li>[S] - Open/Close Monitor</li>
-                <li>[A/D/W/F] - Doors & Vents</li>
-                <li>[X] - Freddy Mask</li>
-                <li>[Z] - Flashlight</li>
-                <li>[SPACE] - Fan</li>
+                <li>[S] : Toggle Monitor</li>
+                <li>[A/D] : Left/Right Door</li>
+                <li>[W/F] : Vents</li>
+                <li>[X] : Freddy Mask</li>
+                <li>[Z] : Flashlight (Hold)</li>
+                <li>[SPACE] : Fan</li>
             </ul>
             <button id="start-night-button" onclick="startGame()">START NIGHT</button>
         </div>
     </div>
 
+    <!-- JUEGO (OFICINA) -->
     <div id="office" class="hidden">
         <div id="office-room">
-            <img id="bg-img" src="office_bg.png">
+            <img id="bg-img" src="office_bg.png" alt="Office">
+
             <div id="door-left" class="door"></div>
             <div id="door-right" class="door"></div>
             <div id="door-top" class="door"></div>
             <div id="door-side" class="door"></div>
+
             <div id="css-fan-container">
                 <div id="fan-blades-css" class="fan-stopped">
                     <div class="blade b1"></div>
@@ -79,26 +85,35 @@
         </div>
 
         <div id="mask-overlay" class="mask-hidden">
-            <img id="mask-img" src="mask.png">
+            <img id="mask-img" src="mask.png" alt="Mask">
         </div>
 
         <div id="camera-monitor" class="monitor-hidden">
             <div id="cam-view">
-                <img id="cam-img" src="">
+                <img id="cam-img" src="" alt="Cam Feed">
                 <div id="cam-static"></div>
                 <div id="cam-label">CAM 01</div>
+
+                <div id="kitchen-overlay" class="hidden">
+                    <h1>CAMERA DISABLED</h1>
+                    <p>- AUDIO ONLY -</p>
+                </div>
+
                 <button id="repair-button" onclick="repairVentilation()">RESET VENT</button>
             </div>
+
             <div id="cam-map">
                 <button class="cam-btn active" data-cam="1">CAM 01 - DINING</button>
                 <button class="cam-btn" data-cam="2">CAM 02 - COVE</button>
                 <button class="cam-btn" data-cam="3">CAM 03 - KITCHEN</button>
-                <button class="cam-btn" data-cam="4:">CAM 04 - BATH</button>
+                <button class="cam-btn" data-cam="4">CAM 04 - RESTROOM</button>
                 <button class="cam-btn" data-cam="5">CAM 05 - CLOSET</button>
             </div>
         </div>
 
+        <!-- Barra roja de abajo fija -->
         <div id="monitor-toggle-bar">MONITOR</div>
+
         <div id="flashlight-overlay"></div>
         <div id="blackout-overlay"></div>
 
@@ -117,6 +132,7 @@
         </div>
     </div>
 
+    <!-- MENU PAUSA -->
     <div id="pause-menu" class="hidden">
         <div id="pause-content">
             <h1>PAUSED</h1>
@@ -134,27 +150,12 @@
     </div>
 
     <div id="jumpscare-overlay" class="hidden">
-        <img id="jumpscare-img" src="">
+        <img id="jumpscare-img" src="" alt="Jumpscare">
     </div>
 
-    <div id="win-screen" class="hidden">
-        <h1 class="did-it-title">6 AM</h1>
-        <h2 id="win-score-disp" class="tally-score">Score: 0</h2>
-        <div id="win-rank" class="rank-label">GREAT!</div>
-        <button class="menu-back-btn" onclick="location.reload()">MENU</button>
-    </div>
-
-    <div id="new-highscore-screen" class="hidden">
-        <h1 class="did-it-title">NEW RECORD</h1>
-        <h2 id="final-score-disp" class="tally-score">Score: 0</h2>
-        <div id="high-rank" class="rank-label">AMAZING!</div>
-        <button class="menu-back-btn" onclick="location.reload()">CONTINUE</button>
-    </div>
-
-    <audio id="bgm-menu" src="menu.mp3" loop></audio>
-    <audio id="sfx-win-normal" src="win.mp3"></audio>
-    <audio id="sfx-win-highscore" src="win_high.mp3"></audio>
-    <audio id="sfx-mask" src="mask.mp3"></audio>
+    <!-- AUDIOS -->
+    <audio id="bgm-menu" src="menu_music.mp3" loop></audio>
+    <audio id="sfx-mask" src="mask_sfx.mp3"></audio>
     <audio id="sfx-jumpscare" src="jumpscare.mp3"></audio>
 
     <script src="script.js"></script>
