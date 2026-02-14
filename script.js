@@ -1,70 +1,16 @@
-// Character Data (50 Animatronics)
-const CHAR_DATA = [
-    { name: "Freddy Fazbear", desc: "He approaches from the left hall. Keep track of him on the monitor and shut the door when he is standing in the doorway. He moves faster as the building gets warmer." },
-    { name: "Bonnie", desc: "He shares Pirate Cove with Foxy. Bonnie becomes agitated when he is viewed on camera. If the figurine on your desk is Bonnie, don't look at CAM 05!" },
-    { name: "Chica", desc: "She stays in the kitchen. If she stops making noise (pots and pans), change the music selection to keep her content." },
-    { name: "Foxy", desc: "He will gradually leave Pirate Cove if you don't check him. If his pieces leave, he will enter your office and dismantle your monitor." },
-    { name: "Toy Freddy", desc: "He sits in Parts and Service playing 'Mr. Hugs'. Check his cam to see how his game is going. Don't let him lose!" },
-    { name: "Toy Bonnie", desc: "He slides through the right vent. Put on your Freddy Mask quickly to fool him." },
-    { name: "Toy Chica", desc: "She slides through the left vent. Put on your Freddy Mask quickly to fool her." },
-    { name: "Mangle", desc: "Climbs through the vent system. Use the vent snare to keep it away, or close the vent door." },
-    { name: "Balloon Boy", desc: "He sneaks in through the side vent. Close it and wait for a thud. If he gets in, he disables your flashlight." },
-    { name: "JJ", desc: "She sneaks in through the side vent. Close it to block her. If she gets in, she disables all door controls." },
-    { name: "Withered Chica", desc: "She climbs through the vents. Use the vent snare. She can get stuck in the vent opening." },
-    { name: "Withered Bonnie", desc: "He slips in when you're looking at your monitor. Put on the mask quickly." },
-    { name: "Marionette", desc: "Don't neglect its music box. If it breaks free, no doors can stop it. Global Music Box also helps." },
-    { name: "Golden Freddy", desc: "When he appears, quickly flip the monitor back up or put on the mask." },
-    { name: "Springtrap", desc: "He climbs through the vents toward the opening in front of you. Close the vent door on his face." },
-    { name: "Phantom Mangle", desc: "Appears on your monitor at random. Close monitor or switch cameras to make it disappear." },
-    { name: "Phantom Freddy", desc: "Slowly materializes in the office. Shine your flashlight to make him disappear." },
-    { name: "Phantom BB", desc: "Appears on the viewing monitor. Switch cameras or close the monitor to avoid its jumpscare." },
-    { name: "Nightmare Freddy", desc: "Freddles will accumulate on your desk. Shine your light at them to scare them away." },
-    { name: "Nightmare Bonnie", desc: "He approaches from the right hall. Purchase his plushie from the Prize Counter to keep him away." },
-    { name: "Nightmare Fredbear", desc: "Invisible at cameras. He can only be seen when he reaches the left door. Close it." },
-    { name: "Nightmare", desc: "Invisible at cameras. He appears at the right door. Close it quickly." },
-    { name: "Jack-O-Chica", desc: "Appears in both doors when the office is hot. Cool down the office to make her leave." },
-    { name: "Nightmare Mangle", desc: "Approaches from the right hall. Purchase her plushie from the Prize Counter." },
-    { name: "Nightmarionne", desc: "Thin form moves around the office. Do not let your cursor dwell on it for too long." },
-    { name: "Nightmare BB", desc: "Sits in your office. Only shine your light when he slumps over. Don't flash if he's upright." },
-    { name: "Old Man Consequences", desc: "Press 'C' to catch a fish in his minigame or your monitor will be disabled." },
-    { name: "Circus Baby", desc: "Approaches from the right hall. Purchase her plushie from the Prize Counter." },
-    { name: "Ballora", desc: "Listen for her music and close the door she is approaching from (left or right)." },
-    { name: "Funtime Foxy", desc: "Check his stage for 'Showtime'. Be on camera exactly on the hour to prevent his attack." },
-    { name: "Ennard", desc: "Climbs through vents. Listen for squeaking metal and a thud to know when to close the vent door." },
-    { name: "Trash and the Gang", desc: "???" },
-    { name: "Helpy", desc: "Appears on your desk at random. Click him quickly or he will blast an air horn." },
-    { name: "Happy Frog", desc: "Duct crawler. Fooled by audio lures. Immune to heater." },
-    { name: "Mr. Hippo", desc: "Duct crawler. Fooled by audio lures or pushed by the heater." },
-    { name: "Pigpatch", desc: "Duct crawler. Fooled by audio lures or pushed by the heater." },
-    { name: "Nedd Bear", desc: "Duct crawler. Fooled by audio lures 50% of the time. Heater works." },
-    { name: "Orville Elephant", desc: "Duct crawler. Rarely fooled by audio lures. Use heater." },
-    { name: "Rockstar Freddy", desc: "Demands five Faz-coins. Pay him or use the heater to make him malfunction." },
-    { name: "Rockstar Bonnie", desc: "Occasionally appears in your office. Find his guitar on cameras to make him leave." },
-    { name: "Rockstar Chica", desc: "Outside either door. Double-click the 'Wet Floor' sign to move it to her side." },
-    { name: "Rockstar Foxy", desc: "Click his parrot for help, but beware; he might jumpscare you if he's in a bad mood." },
-    { name: "Music Man", desc: "Sensitive to noise. If too loud for too long, he will attack." },
-    { name: "El Chip", desc: "Interrupts with loud ads for his restaurant. Press Enter or click Skip." },
-    { name: "Funtime Chica", desc: "Appears to distract you by posing and flashing her camera lights." },
-    { name: "Molten Freddy", desc: "Climbs through vents. Listen for his laugh and close the vent door." },
-    { name: "Scrap Baby", desc: "Sitting at the desk. Shock her if she moves or looks up." },
-    { name: "William Afton", desc: "Attacks once per night. When you hear a clatter and flickering lights, close right vent." },
-    { name: "Lefty", desc: "Sensitive to noise and heat. Use Global Music Box to keep him calm." },
-    { name: "Phone Guy", desc: "Calls at random. Quickly click 'Mute Call' or press Enter to end it." }
-];
-
-// Configuración General
+// CONFIGURACIÓN
 const TOTAL_ANIMATRONICS = 50;
-const NIGHT_LENGTH_SECONDS = 270;
+const NIGHT_LENGTH_SECONDS = 270; // 4.5 minutos (Estándar UCN)
 
 const CAM_DATA = {
     1: { name: "MAIN HALL", img: "cam1_dining.png" },
-    2: { name: "PIRATE COVE", img: "cam1_dining.png" },
+    2: { name: "PIRATE COVE", img: "cam1_dining.png" }, // Reusando imágenes como placeholders
     3: { name: "KITCHEN", img: "cam1_dining.png" },
     4: { name: "RESTROOMS", img: "cam1_dining.png" },
     5: { name: "SUPPLY CLOSET", img: "cam1_dining.png" }
 };
 
-// Variables de Estado
+// ESTADO GLOBAL
 let roster = new Array(TOTAL_ANIMATRONICS).fill(0);
 let gameInterval, powerInterval, tempInterval, ventInterval, fastUpdateInterval;
 let currentScore = 0;
@@ -89,7 +35,7 @@ let state = {
     doors: { left: false, right: false, top: false, side: false }
 };
 
-// Referencias al DOM
+// DOM ELEMENTS
 const menuEl = document.getElementById('menu');
 const officeEl = document.getElementById('office');
 const officeRoom = document.getElementById('office-room');
@@ -112,10 +58,8 @@ const monitorEl = document.getElementById('camera-monitor');
 const camImgEl = document.getElementById('cam-img');
 const camLabelEl = document.getElementById('cam-label');
 const pauseMenuEl = document.getElementById('pause-menu');
-const tooltipEl = document.getElementById('menu-tooltip');
-const charInfoToggle = document.getElementById('char-info-toggle');
 
-// Audio
+// AUDIO ELEMENTS
 const bgmMenu = document.getElementById('bgm-menu');
 const bgmGames = [
     document.getElementById('bgm-game-1'),
@@ -134,7 +78,7 @@ const doorsEl = {
     side: document.getElementById('door-side')
 };
 
-// --- INICIALIZACIÓN ---
+// --- MENÚ PRINCIPAL ---
 
 function initMenu() {
     rosterGrid.innerHTML = '';
@@ -148,7 +92,7 @@ function initMenu() {
         let slot = document.createElement('div');
         slot.className = 'animatronic-slot';
         slot.dataset.index = i;
-        slot.style.backgroundImage = `url('char_${i}.png')`; // Asume que tienes estos archivos
+        slot.style.backgroundImage = `url('char_${i}.png')`;
 
         let levelDisplay = document.createElement('div');
         levelDisplay.className = 'ai-level';
@@ -157,12 +101,6 @@ function initMenu() {
 
         slot.addEventListener('click', () => adjustLevel(i, 1));
         slot.addEventListener('contextmenu', (e) => { e.preventDefault(); adjustLevel(i, -1); });
-
-        // Detección de tooltip
-        slot.addEventListener('mouseenter', () => {
-            if (charInfoToggle && charInfoToggle.checked) showTooltip(i);
-        });
-        slot.addEventListener('mouseleave', hideTooltip);
 
         rosterGrid.appendChild(slot);
     }
@@ -186,46 +124,10 @@ function initMenu() {
     document.querySelectorAll('.cam-btn').forEach(btn => {
         btn.addEventListener('click', () => switchCam(btn.dataset.cam));
     });
-
-    // Evento de mouse para tooltip que sigue el cursor
-    document.addEventListener('mousemove', (e) => {
-        lastMouseX = e.clientX;
-        lastMouseY = e.clientY;
-        if (!menuEl.classList.contains('hidden')) {
-            updateTooltipPos(e);
-        }
-    });
 }
-
-// --- TOOLTIP ---
-
-function showTooltip(idx) {
-    const char = CHAR_DATA[idx];
-    if (!char) return;
-    document.getElementById('tooltip-name').innerText = char.name;
-    document.getElementById('tooltip-desc').innerText = char.desc;
-    tooltipEl.style.display = 'flex';
-    updateTooltipPos({ clientX: lastMouseX, clientY: lastMouseY });
-}
-
-function hideTooltip() {
-    tooltipEl.style.display = 'none';
-}
-
-function updateTooltipPos(e) {
-    let x = e.clientX + 20;
-    let y = e.clientY + 20;
-
-    if (x + 320 > window.innerWidth) x = e.clientX - 340;
-    if (y + 160 > window.innerHeight) y = e.clientY - 180;
-
-    tooltipEl.style.left = x + 'px';
-    tooltipEl.style.top = y + 'px';
-}
-
-// --- LOGICA DE MENÚ ---
 
 function adjustLevel(index, amount) {
+    if (state.paused) return;
     roster[index] += amount;
     if (roster[index] > 20) roster[index] = 0;
     if (roster[index] < 0) roster[index] = 20;
@@ -236,6 +138,7 @@ function adjustLevel(index, amount) {
 }
 
 function setAll(val) {
+    if (state.paused) return;
     for (let i = 0; i < TOTAL_ANIMATRONICS; i++) {
         roster[i] = val;
         let lvEl = rosterGrid.children[i].querySelector('.ai-level');
@@ -255,21 +158,26 @@ function showInstructions() {
     instructionsScreen.classList.remove('hidden');
 }
 
-// --- FLUJO DE JUEGO ---
+// --- FLUJO DE NIFA (GAMEPLAY) ---
 
 function startGame() {
     instructionsScreen.classList.add('hidden');
     officeEl.classList.remove('hidden');
     bgmMenu.pause();
 
-    // Randomizar música
+    // Música Aleatoria
     let rnd = Math.floor(Math.random() * bgmGames.length);
     currentBgm = bgmGames[rnd];
-    if (currentBgm) { currentBgm.currentTime = 0; currentBgm.volume = 0.5; currentBgm.play().catch(e => { }); }
+    if (currentBgm) {
+        currentBgm.currentTime = 0;
+        currentBgm.volume = 0.5;
+        currentBgm.play().catch(e => { console.log("Audio play blocked", e); });
+    }
 
-    // Resetear Estado
+    // Resetear Estado de la Noche
     state.power = 100.0;
     state.temp = 60;
+    state.usage = 1;
     state.timeSeconds = 0;
     state.timeDeciseconds = 0;
     state.fan = false;
@@ -279,8 +187,9 @@ function startGame() {
     state.ventilationBroken = false;
     state.currentCam = 1;
     state.paused = false;
+    state.doors = { left: false, right: false, top: false, side: false };
 
-    // Reset Visuals
+    // Resetear Visuales
     fanBlades.className = 'fan-stopped';
     maskOverlay.className = 'mask-hidden';
     monitorEl.className = 'monitor-hidden';
@@ -289,8 +198,12 @@ function startGame() {
     ventWarnRight.classList.add('hidden');
     tempEl.classList.remove('critical');
 
+    // Resetear Puertas
+    Object.keys(doorsEl).forEach(d => doorsEl[d].classList.remove('closed'));
+
     startIntervals();
 
+    // Event Listeners de Juego
     document.addEventListener('keydown', handleInput);
     document.addEventListener('keyup', handleRelease);
     document.addEventListener('mousemove', handleMouseMoveOffice);
@@ -332,7 +245,7 @@ function updateSensitivity(val) {
     document.getElementById('sens-val').innerText = state.sensitivity.toFixed(1);
 }
 
-// --- INPUT HANDLERS ---
+// --- CONTROLES Y MOVIMIENTO ---
 
 function handleInput(e) {
     if (e.code === 'Escape') {
@@ -379,6 +292,7 @@ function handleMouseMoveOffice(e) {
     let ratio = (centerX + offset) / w;
     ratio = Math.max(0, Math.min(1, ratio));
 
+    // El OfficeRoom tiene 120vw
     let translateX = -(ratio * (officeRoom.offsetWidth - w));
     officeRoom.style.transform = `translateX(${translateX}px)`;
 
@@ -395,7 +309,7 @@ function updateFlashlightVisuals(x, y, off = false) {
     }
 }
 
-// --- ACCIONES DE OFICINA ---
+// --- MECÁNICAS DE OFICINA ---
 
 function toggleDoor(which) {
     if (state.mask || state.monitor || state.paused) return;
@@ -440,6 +354,7 @@ function powerTick() {
     if (state.doors.right) usage++;
     if (state.doors.top) usage++;
     if (state.doors.side) usage++;
+    state.usage = usage;
 
     state.power -= usage * 0.012;
     if (state.power <= 0) { state.power = 0; gameOverPower(); }
@@ -460,13 +375,15 @@ function gameTick() {
     timerEl.innerText = (hour == 0 ? "12" : hour) + " AM";
 
     if (state.timeSeconds >= NIGHT_LENGTH_SECONDS) { winGame(); return; }
+
+    // Aumento de temperatura si el fan está apagado
     if (!state.fan && state.temp < 120) state.temp += 1;
 }
 
 function fastUpdateTick() {
     state.timeDeciseconds++;
     let totalDS = state.timeDeciseconds;
-    if (totalDS > 2700) totalDS = 2700;
+    if (totalDS > (NIGHT_LENGTH_SECONDS * 10)) totalDS = NIGHT_LENGTH_SECONDS * 10;
 
     let ds = totalDS % 10;
     let totalS = Math.floor(totalDS / 10);
@@ -489,6 +406,7 @@ function triggerVentilationFailure() {
         ventWarnLeft.classList.remove('hidden');
         ventWarnRight.classList.remove('hidden');
     }
+    blackoutOverlay.style.transition = "opacity 10s linear";
     blackoutOverlay.classList.add('fading');
 }
 
@@ -496,6 +414,7 @@ function repairVentilation() {
     state.ventilationBroken = false;
     ventWarnLeft.classList.add('hidden');
     ventWarnRight.classList.add('hidden');
+    blackoutOverlay.style.transition = "none";
     blackoutOverlay.classList.remove('fading');
     const staticDiv = document.getElementById('cam-static');
     staticDiv.style.opacity = "0.9";
@@ -515,7 +434,7 @@ function gameOverPower() {
     alert("SIN ENERGÍA..."); location.reload();
 }
 
-// --- VICTORIA Y RECUENTO ---
+// --- VICTORIA Y RECUENTO DE PUNTOS ---
 
 function winGame() {
     stopIntervals();
@@ -540,20 +459,25 @@ function startScoreTally(scoreId, rankId, isHigh) {
     let rankEl = document.getElementById(rankId);
     let winAudio = isHigh ? sfxWinHigh : sfxWinNormal;
 
+    // Resetear visuales del recuento
     scoreEl.innerText = "Score: 0";
     if (rankEl) {
         rankEl.innerText = "GREAT JOB!";
         rankEl.className = "rank-label rank-great";
     }
 
-    try { winAudio.play().catch(e => { }); } catch (e) { }
+    try { winAudio.play().catch(e => { console.log("Win audio play blocked", e); }); } catch (e) { }
 
-    let step = Math.max(1, Math.floor(targetScore / 100));
+    // Velocidad del contador (unos 2-3 segundos total)
+    let step = Math.max(1, Math.floor(targetScore / 100)); // Incrementar de 1 en 1 si es bajo
+    if (targetScore > 5000) step = Math.floor(targetScore / 150);
+
     let interval = setInterval(() => {
         currentDisplayScore += step;
         if (currentDisplayScore >= targetScore) {
             currentDisplayScore = targetScore;
             clearInterval(interval);
+            // Salto al final de la música (los últimos 4 segundos)
             try {
                 if (winAudio.duration > 4) {
                     winAudio.currentTime = winAudio.duration - 4;
@@ -580,5 +504,5 @@ function updateRankLabel(el, score) {
     el.className = className;
 }
 
-// Arrancar menú al cargar
+// Iniciar menú al cargar el script
 initMenu();
