@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Custom Night - HTML Custom</title>
+    <title>Ultimate Custom Night - Stable Premium</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -14,103 +14,110 @@
             color: white;
             font-family: 'Courier New', Courier, monospace;
         }
+
+        /* Estilos rápidos para el HUD y el Win Screen */
+        #hud div {
+            text-shadow: 2px 2px 2px black;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 4000;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <!-- Botón de Pausa (Manita) -->
-    <div id="pause-trigger" onclick="togglePause()">👈</div>
-
-    <!-- Menú de Pausa -->
-    <div id="pause-menu" class="hidden">
-        <div id="pause-content">
-            <h1>JUEGO PAUSADO</h1>
-            <div class="pause-options">
-                <button onclick="togglePause()">REANUDAR</button>
-                <div class="setting-item">
-                    <label>Sensibilidad del Mouse:</label>
-                    <input type="range" id="sens-slider" min="0.5" max="2.0" step="0.1" value="1.0"
-                        oninput="updateSensitivity(this.value)">
-                    <span id="sens-val">1.0</span>
-                </div>
-                <button onclick="location.reload()">SALIR AL MENÚ</button>
-            </div>
-        </div>
-    </div>
 
     <!-- MENÚ PRINCIPAL -->
     <div id="menu">
-        <div id="audio-hint">Haz clic en cualquier lugar para activar el sonido 🔊</div>
+        <div id="audio-hint">CLICK TO ENABLE AUDIO 🔊</div>
         <div id="roster-grid"></div>
 
         <div id="side-panel">
             <div id="difficulty-controls">
                 <button onclick="setAll(0)">SET ALL 0</button>
-                <button onclick="setAll(1)">ADD ALL 1</button>
-                <button onclick="setAll(5)">SET ALL 5</button>
                 <button onclick="setAll(10)">SET ALL 10</button>
                 <button onclick="setAll(20)">SET ALL 20</button>
             </div>
-            <div id="blocker-panel"></div>
+
             <div id="score-display">
-                <div class="score-row">Point Value: <span id="point-value">0</span></div>
+                HIGH SCORE: <span id="high-score-val">0</span><br>
+                VALUE: <span id="point-value">0</span>
             </div>
+
             <button id="go-button" onclick="showInstructions()">GO!</button>
+        </div>
+
+        <div id="menu-tooltip" class="hidden">
+            <h3 id="tooltip-name"></h3>
+            <p id="tooltip-desc"></p>
         </div>
     </div>
 
-    <!-- PANTALLA DE INSTRUCCIONES -->
+    <!-- INSTRUCCIONES -->
     <div id="instructions-screen" class="hidden">
         <div id="instr-content">
-            <h1>SISTEMAS DE DEFENSA</h1>
+            <h1>CONTROLS</h1>
             <ul id="instr-list">
-                <li>[A/D] - Puertas Lateral Izq/Der</li>
-                <li>[W] - Ventilación Superior (Top Vent)</li>
-                <li>[F] - Ventilación Inferior (Side Vent)</li>
-                <li>[Z] - Linterna (Uso limitado)</li>
-                <li>[S] - MONITOR DE CÁMARAS</li>
-                <li>[Espacio] - Ventilador (Refresca la oficina)</li>
-                <li>[X] - MÁSCARA DE FREDDY (Úsala rápido)</li>
+                <li>[S] : Toggle Monitor</li>
+                <li>[A/D/W/F] : Doors & Vents</li>
+                <li>[X] : Freddy Mask</li>
+                <li>[Z] : Flashlight</li>
+                <li>[SPACE] : Fan</li>
             </ul>
-            <p>Mueve el mouse para vigilar los laterales.</p>
-            <button id="start-night-button" onclick="startGame()">¡EMPEZAR NOCHE!</button>
+            <button id="start-night-button" onclick="startGame()">START NIGHT</button>
         </div>
     </div>
 
     <!-- OFICINA -->
     <div id="office" class="hidden">
-        <!-- Room Container -->
         <div id="office-room">
-            <img src="office_bg.png" alt="Office Background" id="bg-img">
+            <img id="bg-img" src="office_bg.png" alt="Office">
             <div id="door-left" class="door"></div>
             <div id="door-right" class="door"></div>
             <div id="door-top" class="door"></div>
             <div id="door-side" class="door"></div>
-        </div>
 
-        <!-- Máscara -->
-        <div id="mask-overlay" class="mask-hidden">
-            <img src="mask.png" alt="MASK" id="mask-img">
-        </div>
-
-        <!-- Ventilador CSS -->
-        <div id="css-fan-container">
-            <div id="fan-blades-css" class="fan-stopped">
-                <div class="blade b1"></div>
-                <div class="blade b2"></div>
-                <div class="blade b3"></div>
-                <div class="fan-center"></div>
+            <div id="css-fan-container">
+                <div id="fan-blades-css" class="fan-stopped">
+                    <div class="blade b1"></div>
+                    <div class="blade b2"></div>
+                    <div class="blade b3"></div>
+                    <div class="fan-center"></div>
+                </div>
+                <div id="fan-cage"></div>
             </div>
-            <div id="fan-cage"></div>
+        </div>
+
+        <!-- MÁSCARA -->
+        <div id="mask-overlay" class="mask-hidden">
+            <img id="mask-img" src="mask.png" alt="Mask">
         </div>
 
         <!-- MONITOR -->
         <div id="camera-monitor" class="monitor-hidden">
             <div id="cam-view">
-                <img src="cam1_dining.png" id="cam-img" alt="CAMERA FEED">
+                <img id="cam-img" src="">
                 <div id="cam-static"></div>
                 <div id="cam-label">CAM 01</div>
-                <button id="repair-button" onclick="repairVentilation()">RESET VENTILATION</button>
             </div>
             <div id="cam-map">
                 <button class="cam-btn active" data-cam="1">CAM 01</button>
@@ -118,65 +125,53 @@
                 <button class="cam-btn" data-cam="3">CAM 03</button>
                 <button class="cam-btn" data-cam="4">CAM 04</button>
                 <button class="cam-btn" data-cam="5">CAM 05</button>
-                Estaba buscando en el historial de cambios de los archivos (Git) para poder restaurar exactamente la
-                versión que me pediste. Ya encontré el código original y lo estoy aplicando ahora mismo. Perdon por la
-                espera.
             </div>
         </div>
+
+        <!-- Barra Toggle -->
+        <div id="monitor-toggle-bar">MONITOR</div>
 
         <!-- Overlays -->
         <div id="flashlight-overlay"></div>
+        <div id="blackout-overlay"></div>
 
         <!-- HUD -->
         <div id="hud">
-            <div id="top-left">
-                <div id="timer">12:00 AM</div>
-                <div id="detailed-timer">0:00.0</div>
+            <div id="top-right-hud">
+                <div id="timer">12 AM</div>
+                <div id="detailed-timer">0:00.00</div>
             </div>
-            <div id="bottom-left">
-                <div id="power-left">Power Left: <span id="power-val">100</span>%</div>
-                <div id="usage-meter">Usage: <span id="usage-bars">|</span></div>
+            <div id="bottom-left-hud">
+                POWER: <span id="power-val">100</span>%<br>
+                USAGE: <span id="usage-bars"></span>
             </div>
-            <div id="bottom-right">
-                <div id="temperature">60°</div>
+            <div id="bottom-right-hud">
+                TEMP: <span id="temperature">60</span>°
             </div>
-        </div>
-
-        <div id="monitor-toggle-bar" onclick="toggleMonitor()">
-            <span id="vent-warn-left" class="warn-emoji hidden">⚠️</span>
-            MONITOR
-            <span id="vent-warn-right" class="warn-emoji hidden">⚠️</span>
-        </div>
-
-        <!-- Oscuridad TOTAL (Al final para que tape TODO el HUD) -->
-        <div id="blackout-overlay"></div>
-
-        <div id="jumpscare" class="hidden">
-            <img id="jumpscare-img" src="" alt="JUMPSCARE">
         </div>
     </div>
 
-    <!-- Audio -->
+    <!-- PANTALLA DE VICTORIA (CON FUEGOS ARTIFICIALES) -->
+    <div id="win-screen" class="hidden">
+        <h1 class="did-it-title">6 AM</h1>
+        <h2 id="win-score-disp" class="tally-score">Score: 0</h2>
+        <div id="win-rank" class="rank-label">SURVIVED!</div>
+        <button class="menu-back-btn" onclick="location.reload()">MENU</button>
+    </div>
+
+    <div id="new-highscore-screen" class="hidden">
+        <h1 class="did-it-title">NEW RECORD</h1>
+        <h2 id="final-score-disp" class="tally-score">Score: 0</h2>
+        <button class="menu-back-btn" onclick="location.reload()">CONTINUE</button>
+    </div>
+
+    <!-- AUDIOS -->
     <audio id="bgm-menu" src="menu_music.mp3" loop></audio>
     <audio id="bgm-game-1" src="game_music_1.mp3" loop></audio>
     <audio id="bgm-game-2" src="game_music_2.mp3" loop></audio>
     <audio id="bgm-game-3" src="game_music_3.mp3" loop></audio>
     <audio id="sfx-win-normal" src="win_normal.mp3"></audio>
-    <audio id="sfx-win-highscore" src="win_highscore.mp3"></audio>
-    <audio id="sfx-mask" src="mask_sfx.mp3"></audio>
-
-    <!-- Win Screens -->
-    <div id="win-screen" class="hidden">
-        <h1>6:00 AM</h1>
-        <p>SURVIVED</p>
-        <button class="menu-back-btn" onclick="location.reload()">MENU</button>
-    </div>
-
-    <div id="new-highscore-screen" class="hidden">
-        <h1>IT'S A NEW RECORD!</h1>
-        <h2 id="final-score-disp">Score: 0</h2>
-        <button class="menu-back-btn" onclick="location.reload()">MENU</button>
-    </div>
+    <audio id="sfx-win-high" src="win_highscore.mp3"></audio>
 
     <script src="script.js"></script>
 </body>
