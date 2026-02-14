@@ -191,10 +191,13 @@ function initMenu() {
 
     // Atajos de teclado para Flojeruos (W/S)
     document.addEventListener('keydown', (e) => {
+        // Solo si el MENÚ está visible y estamos sobre un slot
         if (!menuEl.classList.contains('hidden') && hoveredSlotIdx !== -1) {
             if (e.code === 'KeyW') {
+                e.preventDefault(); // Evitar scroll
                 adjustLevel(hoveredSlotIdx, 1);
             } else if (e.code === 'KeyS') {
+                e.preventDefault(); // Evitar scroll
                 adjustLevel(hoveredSlotIdx, -1);
             }
         }
@@ -520,7 +523,7 @@ function gameTick() {
 }
 
 function omcTick() {
-    const level = roster[27]; // OMC es el índice 27 (Old Man Consequences)
+    const level = roster[26]; // OMC es el índice 26 (Old Man Consequences)
     if (level === 0) return;
 
     if (state.omc.active) {
@@ -536,10 +539,13 @@ function omcTick() {
         if (state.omc.timer > 10) {
             failOMC();
         }
-    } else {
-        // Intento de aparición aleatoria
-        if (state.monitor && Math.random() < (level / 10000) * 1) {
-            triggerOMC();
+        // Intento de aparición aleatoria (Basado en requerimiento: 50% base + 1.3% por nivel)
+        // Se intenta cada vez que se abre el monitor o en ticks aleatorios
+        if (state.monitor && Math.random() < 0.05) { // Checkeo ocasional mientras monitor abierto
+            const triggerProb = 0.5 + (level * 0.013);
+            if (Math.random() < triggerProb && !state.omc.active) {
+                triggerOMC();
+            }
         }
     }
 
@@ -646,7 +652,8 @@ function fastUpdateTick() {
 }
 
 function ventCheckTick() {
-    if (!state.ventilationBroken && Math.random() < 0.30) {
+    // Probabilidad reducida para evitar "bugs" de spam y hacerlo más balanceado (aprox cada 40s)
+    if (!state.ventilationBroken && Math.random() < 0.12) {
         triggerVentilationFailure();
     }
 }
