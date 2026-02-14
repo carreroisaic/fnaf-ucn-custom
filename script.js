@@ -90,7 +90,9 @@ let state = {
     doors: { left: false, right: false, top: false, side: false },
     omc: { active: false, fishPos: 0, fishDir: 1, timer: 0, nextTrigger: -1 },
     monitorDisabled: 0,
-    ventCooldown: 0, // Cooldown para evitar bugs de spam de ventilación
+    ventCooldown: 0,
+    puppetBox: 100.0,
+    winding: false,
     freddyPos: 0,
     freddyTimer: 0
 };
@@ -121,6 +123,9 @@ const pauseMenuEl = document.getElementById('pause-menu');
 const tooltipEl = document.getElementById('menu-tooltip');
 const charInfoToggle = document.getElementById('char-info-toggle');
 const loadingScreen = document.getElementById('loading-screen');
+const musicBoxUI = document.getElementById('music-box-ui');
+const boxMeterFill = document.getElementById('box-meter-fill');
+const monitorToggleBar = document.getElementById('monitor-toggle-bar');
 
 // AUDIO ELEMENTS
 const bgmMenu = document.getElementById('bgm-menu');
@@ -218,6 +223,19 @@ function initMenu() {
         }
     };
     ["click", "keydown", "mousedown", "touchstart"].forEach(evt => document.addEventListener(evt, tryPlayMenuMusic));
+
+    // Monitor Toggle Bar
+    if (monitorToggleBar) {
+        monitorToggleBar.addEventListener('mouseenter', toggleMonitor);
+    }
+
+    // Puppet Winding
+    const windBtn = document.getElementById('wind-btn');
+    if (windBtn) {
+        windBtn.addEventListener('mousedown', () => { state.winding = true; });
+        windBtn.addEventListener('mouseup', () => { state.winding = false; });
+        windBtn.addEventListener('mouseleave', () => { state.winding = false; });
+    }
 
     document.querySelectorAll('.cam-btn').forEach(btn => {
         btn.addEventListener('click', () => switchCam(btn.dataset.cam));
@@ -544,13 +562,14 @@ function gameTick() {
 
     // AI TICKS
     omcTick();
+    puppetTick();
     freddyAI();
 
     if (state.ventCooldown > 0) state.ventCooldown--;
 }
 
 function omcTick() {
-    const level = roster[28]; // OMC es el índice 28 según CHAR_DATA
+    const level = roster[26]; // OMC es el índice 26 (Freddy=0... Puppet=12... OMC=26)
     if (level === 0) return;
 
     if (state.omc.active) {
@@ -616,6 +635,39 @@ function failOMC() {
     state.monitorDisabled = 10; // 10 segundos bloqueado
     if (state.monitor) toggleMonitor();
     try { sfxOmcFail.currentTime = 0; sfxOmcFail.play(); } catch (e) { }
+}
+
+function puppetTick() {
+    const level = roster[12]; // Puppet es el índice 12
+    if (level === 0) {
+        state.puppetBox = 100;
+        return;
+    }
+
+    if (state.winding) {
+        state.puppetBox = Math.min(100, state.puppetBox + 1.2);
+    } else {
+        // Cae más rápido según nivel de IA
+        state.puppetBox -= (0.05 + (level * 0.015));
+    }
+
+    // Actualizar Visuales si el monitor está abierto
+    if (state.monitor) {
+        if (boxMeterFill) boxMeterFill.style.width = state.puppetBox + "%";
+        // Mostrar UI solo en CAM 04
+        if (state.currentCam === 4) {
+            musicBoxUI.classList.remove('hidden');
+        } else {
+            musicBoxUI.classList.add('hidden');
+        }
+    } else {
+        musicBoxUI.classList.add('hidden');
+    }
+
+    if (state.puppetBox <= 0) {
+        state.puppetBox = 0;
+        triggerJumpscare(12);
+    }
 }
 
 function freddyAI() {
