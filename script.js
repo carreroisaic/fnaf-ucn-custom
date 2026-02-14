@@ -71,6 +71,7 @@ let currentScore = 0;
 let highScore = parseInt(localStorage.getItem('fnaf_ucn_highscore')) || 0;
 let lastMouseX = window.innerWidth / 2;
 let lastMouseY = window.innerHeight / 2;
+let hoveredSlotIdx = -1; // Para atajos de teclado W/S
 
 let state = {
     power: 100.0,
@@ -163,11 +164,15 @@ function initMenu() {
         slot.addEventListener('click', () => adjustLevel(i, 1));
         slot.addEventListener('contextmenu', (e) => { e.preventDefault(); adjustLevel(i, -1); });
 
-        // Tooltip listeners
+        // Tooltip y Atajos listeners
         slot.addEventListener('mouseenter', () => {
+            hoveredSlotIdx = i;
             if (charInfoToggle && charInfoToggle.checked) showTooltip(i);
         });
-        slot.addEventListener('mouseleave', hideTooltip);
+        slot.addEventListener('mouseleave', () => {
+            hoveredSlotIdx = -1;
+            hideTooltip();
+        });
 
         rosterGrid.appendChild(slot);
     }
@@ -181,6 +186,17 @@ function initMenu() {
         lastMouseY = e.clientY;
         if (!menuEl.classList.contains('hidden')) {
             updateTooltipPos(e);
+        }
+    });
+
+    // Atajos de teclado para Flojeruos (W/S)
+    document.addEventListener('keydown', (e) => {
+        if (!menuEl.classList.contains('hidden') && hoveredSlotIdx !== -1) {
+            if (e.code === 'KeyW') {
+                adjustLevel(hoveredSlotIdx, 1);
+            } else if (e.code === 'KeyS') {
+                adjustLevel(hoveredSlotIdx, -1);
+            }
         }
     });
 
