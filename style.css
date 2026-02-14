@@ -91,7 +91,6 @@ body {
     overflow: hidden;
     user-select: none;
     cursor: url('cursor.png'), auto;
-    /* CURSOR PERSONALIZADO */
     font-family: "Consolas", "Courier New", monospace, sans-serif;
 }
 

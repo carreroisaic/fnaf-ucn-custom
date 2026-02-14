@@ -400,12 +400,14 @@ function handleInput(e) {
             updateFlashlightVisuals(lastMouseX, lastMouseY);
         }
     }
-    if (e.code === 'KeyS' || e.code === 'KeyC') {
-        if (state.omc.active && e.code === 'KeyC') {
-            catchFish();
-        } else {
-            toggleMonitor();
-        }
+    // Monitor: Solo con S ahora para evitar conflictos con C de OMC
+    if (e.code === 'KeyS') {
+        toggleMonitor();
+    }
+
+    // Pescar: Solo si OMC está activo
+    if (e.code === 'KeyC' && state.omc.active) {
+        catchFish();
     }
 
     if (e.code === 'KeyA') toggleDoor('left');
@@ -548,7 +550,7 @@ function gameTick() {
 }
 
 function omcTick() {
-    const level = roster[28]; // OMC es el índice 28 según CHAR_DATA (Golden Freddy is 15, Springtrap 16, etc)
+    const level = roster[28]; // OMC es el índice 28 según CHAR_DATA
     if (level === 0) return;
 
     if (state.omc.active) {
@@ -567,16 +569,16 @@ function omcTick() {
     } else {
         // OMC PROGRAMADO (A cierta hora según dificultad)
         if (state.omc.nextTrigger === -1) {
-            // Nivel 20: ~60s (1 AM)
-            // Nivel 1: ~220s (5 AM)
-            state.omc.nextTrigger = Math.max(20, 240 - (level * 9));
-            console.log("OMC programado para el segundo: " + state.omc.nextTrigger);
+            // Nivel 20: 30s | Nivel 1: 230s
+            state.omc.nextTrigger = 240 - (level * 10.5);
+            console.log("OLD MAN PROGRAMADO: segundo " + Math.floor(state.omc.nextTrigger));
         }
 
-        if (state.timeSeconds >= state.omc.nextTrigger && state.monitor) {
+        // Si ya pasó la hora y tenemos el monitor abierto
+        if (state.timeSeconds >= state.omc.nextTrigger && state.monitor && !state.omc.active) {
             triggerOMC();
-            // Reprogramar para más tarde si el nivel es alto
-            state.omc.nextTrigger = state.timeSeconds + Math.max(40, 120 - (level * 4));
+            // Reprogramar para 50s después si sigue activo
+            state.omc.nextTrigger = state.timeSeconds + 50;
         }
     }
 
