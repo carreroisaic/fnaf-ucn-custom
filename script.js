@@ -524,7 +524,8 @@ function toggleMonitor() {
 // --- TICKS DEL SISTEMA ---
 
 function powerTick() {
-    // AI Ticks más rápidos para OMC (100ms)
+    if (state.paused) return;
+    // AI Ticks más rápidos para OMC
     omcTick();
 
     let usage = 1;
@@ -545,12 +546,14 @@ function powerTick() {
 }
 
 function tempTick() {
+    if (state.paused) return;
     if (state.fan && state.temp > 60) state.temp--;
     tempEl.innerText = state.temp + "°";
     tempEl.classList.toggle('critical', state.temp >= 100);
 }
 
 function gameTick() {
+    if (state.paused) return;
     state.timeSeconds++;
     let hour = Math.floor((state.timeSeconds / NIGHT_LENGTH_SECONDS) * 6);
     timerEl.innerText = (hour == 0 ? "12" : hour) + " AM";
@@ -580,9 +583,9 @@ function omcTick() {
         }
         document.getElementById('omc-fish').style.left = state.omc.fishPos + '%';
 
-        // Timer de fallo (si tarda más de 10 segundos)
+        // Timer de fallo (si tarda más de 10 segundos = 100 ticks de 100ms)
         state.omc.timer++;
-        if (state.omc.timer > 10) {
+        if (state.omc.timer > 100) {
             failOMC();
         }
     } else {
@@ -654,8 +657,8 @@ function puppetTick() {
     // Actualizar Visuales si el monitor está abierto
     if (state.monitor) {
         if (boxMeterFill) boxMeterFill.style.width = state.puppetBox + "%";
-        // Mostrar UI solo en CAM 04
-        if (state.currentCam === 4) {
+        // Mostrar UI solo en CAM 03 (KITCHEN)
+        if (String(state.currentCam) === "3") {
             musicBoxUI.classList.remove('hidden');
         } else {
             musicBoxUI.classList.add('hidden');
@@ -725,6 +728,7 @@ function triggerJumpscare(animIndex) {
 }
 
 function fastUpdateTick() {
+    if (state.paused) return;
     state.timeDeciseconds++;
     let totalDS = state.timeDeciseconds;
     if (totalDS > (NIGHT_LENGTH_SECONDS * 10)) totalDS = NIGHT_LENGTH_SECONDS * 10;
@@ -739,7 +743,7 @@ function fastUpdateTick() {
 }
 
 function ventCheckTick() {
-    if (state.ventCooldown > 0) return;
+    if (state.paused || state.ventCooldown > 0) return;
 
     if (!state.ventilationBroken && Math.random() < 0.10) {
         triggerVentilationFailure();
@@ -771,8 +775,19 @@ function repairVentilation() {
 function switchCam(id) {
     if (state.paused) return;
     state.currentCam = id;
-    camImgEl.src = CAM_DATA[id].img;
-    camLabelEl.innerText = "CAM 0" + id + " - " + CAM_DATA[id].name;
+    const cam = CAM_DATA[id];
+
+    // UI Especial Kitchen/Caja de Música
+    if (String(id) === "3") {
+        camImgEl.style.display = 'none';
+        camLabelEl.innerHTML = `CAM 03 - ${cam.name}<br><span style="color:red; font-size: 0.8em; letter-spacing: 2px;">- CAMERA DISABLED - AUDIO ONLY -</span>`;
+    } else {
+        camImgEl.style.display = 'block';
+        camImgEl.src = cam.img;
+        camLabelEl.innerText = "CAM 0" + id + " - " + (cam ? cam.name : "");
+        camImgEl.onerror = () => { camImgEl.style.display = 'none'; };
+    }
+
     document.querySelectorAll('.cam-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.cam == id));
 }
 
