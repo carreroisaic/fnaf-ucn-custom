@@ -1,55 +1,55 @@
 // Character Data
 const CHAR_DATA = [
-    { name: "Freddy Fazbear", desc: "Approaches from the left hall. Close the door when he is at the opening. Moves faster with heat." },
-    { name: "Bonnie", desc: "Shares Pirate's Cove with Foxy. Don't look at him on cameras, or he will disable them." },
-    { name: "Chica", desc: "Stays in the kitchen. Change the music box selection when you hear her clanging pots and pans." },
-    { name: "Foxy", desc: "View his cove frequently to inhibit his advance." },
-    { name: "Toy Freddy", desc: "Playing 'Mr. Hugs' on CAM-08. Don't let him lose or he'll jumpscare you." },
-    { name: "Toy Bonnie", desc: "Enters through the right vent. Use the Freddy mask to fool him." },
-    { name: "Toy Chica", desc: "Enters through the left vent. Use the Freddy mask to fool her." },
-    { name: "Mangle", desc: "Travels through the vent system. Use the vent snare to block it." },
-    { name: "Balloon Boy", desc: "Enters through the side vent. Close the vent to block him or he'll disable your light." },
-    { name: "JJ", desc: "Enters through the side vent. Close to block or she'll disable door controls." },
-    { name: "Withered Chica", desc: "Vent crawler. Use the vent snare or close the vent door." },
-    { name: "Withered Bonnie", desc: "Appears in your office. Put on the mask quickly to send him away." },
-    { name: "The Marionette", desc: "Wind the Music Box on CAM-04 or she will attack." },
-    { name: "Golden Freddy", desc: "Appears when you put the monitor down. Mask or pull monitor back up!" },
-    { name: "Springtrap", desc: "Approaches through the top vent. Close it when you see his face." },
-    { name: "Phantom Mangle", desc: "Appears on cameras. Close monitor or switch cams to avoid noise distortion." },
-    { name: "Phantom Freddy", desc: "Appears in the office. Shine your light at him to dispel him." },
-    { name: "Phantom BB", desc: "Appears on cameras. Close monitor or switch cams to avoid a jumpscare." },
-    { name: "Nightmare Freddy", desc: "Use your flashlight to scare away the Freddles that sit on your desk." },
-    { name: "Nightmare Bonnie", desc: "Buy his plushie from the Prize Counter when he appears on cameras." },
-    { name: "Nightmare Fredbear", desc: "Invisible at doors. Listen for his laugh and close the corresponding door." },
-    { name: "Nightmare", desc: "Same as Nightmare Fredbear but more aggressive. Close the right door on laugh." },
-    { name: "Jack-O-Chica", desc: "Appears in both doors when the office is hot. Cool it down to make her leave." },
-    { name: "Nightmare Mangle", desc: "Buy her plushie from the Prize Counter when she appears." },
-    { name: "Nightmarionne", desc: "Moves towards your cursor. Keep it away from him to survive!" },
-    { name: "Nightmare BB", desc: "Shine your light only when he stands up. If he stays sitting, leave him be." },
-    { name: "Old Man Consequences", desc: "Press 'C' to catch a fish in his minigame or be locked out of cameras." },
-    { name: "Circus Baby", desc: "Buy her plushie from the Prize Counter when she approaches." },
-    { name: "Ballora", desc: "Listen for her music and close the door she's approaching from." },
-    { name: "Funtime Foxy", desc: "Check his stage to see when his showtime is. Be on camera exactly on the hour!" },
-    { name: "Ennard", desc: "Approaches through the vents. Listen for the squeaking metal cue." },
-    { name: "Trash and the Gang", desc: "Temporary distractions that block your view or make noise." },
-    { name: "Helpy", desc: "Click him quickly or he'll blast an air horn in your face!" },
-    { name: "Happy Frog", desc: "Duct crawler. 100% fooled by audio lures. Immune to heater." },
-    { name: "Mr. Hippo", desc: "Duct crawler. Fooled by audio lures and pushed by heater." },
-    { name: "Pigpatch", desc: "Duct crawler. Fooled by audio lures and pushed by heater." },
-    { name: "Nedd Bear", desc: "Duct crawler. Sometimes fooled by audio lures (50%)." },
-    { name: "Orville Elephant", desc: "Duct crawler. Rarely fooled by audio lures (10%). Use heater." },
-    { name: "Rockstar Freddy", desc: "Asks for 5 Faz-coins. Pay him or heat the office to glitch him." },
-    { name: "Rockstar Bonnie", desc: "Find his guitar on cameras when he appears in your office." },
-    { name: "Rockstar Chica", desc: "Place the 'Wet Floor' sign on the side she is approaching." },
-    { name: "Rockstar Foxy", desc: "Click his parrot for help, but there's a risk of a jumpscare!" },
-    { name: "Music Man", desc: "Keep the noise down, or he will eventually jumpscare you." },
-    { name: "El Chip", desc: "Interrupts with loud ads. Press Enter or click Skip to close them." },
-    { name: "Funtime Chica", desc: "Appears to distract you with camera flashes and poses." },
-    { name: "Molten Freddy", desc: "Approaches through the vents. Listen for his laugh and close the door." },
-    { name: "Scrap Baby", desc: "Sitting at the desk. Shock her if she moves or looks up." },
-    { name: "William Afton", desc: "Attacks once per night. Listen for a loud crash and flickering lights." },
-    { name: "Lefty", desc: "Agitated by noise and heat. Keep them low to keep him away." },
-    { name: "Phone Guy", desc: "Mute his call or it will create constant noise for several seconds." }
+    { name: "Freddy Fazbear", desc: "He approaches from the left hall. Keep track of him on the monitor and shut the door when he is standing in the doorway. He moves faster as the building gets warmer." },
+    { name: "Bonnie", desc: "He shares Pirate Cove with Foxy, but while Foxy becomes more active when NOT viewed on camera, Bonnie becomes more agitated when he IS viewed. If he is in the doorway, he will disable your cameras." },
+    { name: "Chica", desc: "She stays in the kitchen, being generally clumsy and knocking over pots and pans. If she stops making noise, change the music selection to keep her content." },
+    { name: "Foxy", desc: "He inhabits Pirate Cove and will gradually leave if you don't check on him. If his pieces leave the cove, he will enter your office and dismantle your monitor." },
+    { name: "Toy Freddy", desc: "He sits in the Parts and Service room playing video games on his big screen TV. Check his cam to see how his game is going. Don't let him lose!" },
+    { name: "Toy Bonnie", desc: "He slides through the vent on your right. Put on your Freddy Mask to fool him and send him back into the vents." },
+    { name: "Toy Chica", desc: "She slides through the vent on your left. Put on your Freddy Mask to fool her and send her back into the vents." },
+    { name: "Mangle", desc: "Mangle climbs through the vent system. Use the vent snare to keep it away, or close the vent door if it reaches the opening." },
+    { name: "Balloon Boy", desc: "He will try to sneak in through the side vent. Close the side vent and wait for a thud to send him away. If he gets in, he will temporarily disable your flashlight." },
+    { name: "JJ", desc: "She will also try to sneak in through the side vent. Close the side vent to block her. If she gets in, she will disable all door controls until she leaves." },
+    { name: "Withered Chica", desc: "She climbs through the vents. Use the vent snare and the vent door to keep her out. Unlike Mangle, she can get stuck in the vent opening." },
+    { name: "Withered Bonnie", desc: "He slips in through the front while you're looking at your monitor. Put on the mask quickly to fool him." },
+    { name: "Marionette", desc: "If you neglect its music box, it will eventually break free. No doors can stop it. The Global Music Box can also soothe it." },
+    { name: "Golden Freddy", desc: "When he appears after you flip down your monitor, quickly flip it back up or put on your mask to make him disappear." },
+    { name: "Springtrap", desc: "He climbs through the vent system toward the vent opening in front of you. Track him on the vent radar and close the vent door on his face." },
+    { name: "Phantom Mangle", desc: "It will appear at random on your viewing monitor. Close the monitor or switch cameras to make it disappear. If left on screen, it will invade your office with audio interference." },
+    { name: "Phantom Freddy", desc: "He slowly materializes in your office. Shine your flashlight at him to make him disappear. If he fully forms, he will jumpscare you and cause a blackout." },
+    { name: "Phantom BB", desc: "He appears on the viewing monitor. Quickly switch cameras or close the monitor to avoid its jumpscare." },
+    { name: "Nightmare Freddy", desc: "Freddles will accumulate on your desk. Shine your light at them to scare them away. If too many gather, Nightmare Freddy will jumpscare you." },
+    { name: "Nightmare Bonnie", desc: "He approaches from the right hall. You must purchase his plushie from the Prize Counter when he is active to keep him away." },
+    { name: "Nightmare Fredbear", desc: "He is invisible to the cameras and can only be seen when he reaches your left door. Close it on his face to send him back into the darkness." },
+    { name: "Nightmare", desc: "Similar to Nightmare Fredbear, he is invisible to the cameras and only appears at your right door. Close it quickly to survive." },
+    { name: "Jack-O-Chica", desc: "She appears in both doors simultaneously when the office is too hot. Keep the office cool to make her fade away." },
+    { name: "Nightmare Mangle", desc: "She approaches from the right hall. You must purchase her plushie from the Prize Counter to prevent her from attacking." },
+    { name: "Nightmarionne", desc: "Its thin form moves around the office. Do not let your cursor dwell on it for too long, or it will jumpscare you." },
+    { name: "Nightmare BB", desc: "He sits in your office all night. Only shine your light on him when he slumps over. If you flash him while he is upright, he will attack." },
+    { name: "Old Man Consequences", desc: "When his minigame appears, press 'C' to catch a fish. Failure to do so will result in your monitor being disabled for a short time." },
+    { name: "Circus Baby", desc: "She approaches from the right hall. Purchase her plushie from the Prize Counter to keep her content." },
+    { name: "Ballora", desc: "She will approach from either the left or right hall. Listen for her music to know which door to close." },
+    { name: "Funtime Foxy", desc: "Check his stage to see when his 'Showtime' is. You must be viewing his camera at the exact moment the hour changes to prevent his attack." },
+    { name: "Ennard", desc: "He climbs through the vent system. Listen for the sound of squeaking metal and a thud to know when to close the vent door." },
+    { name: "Trash and the Gang", desc: "???" },
+    { name: "Helpy", desc: "He will appear on your desk at random. Click on him quickly or he will blast an air horn in your face." },
+    { name: "Happy Frog", desc: "She climbs through the overhead duct system. Use the audio lure to keep her in place. She is immune to the heater." },
+    { name: "Mr. Hippo", desc: "He climbs through the overhead duct system. Use the audio lure to keep him in place or the heater to push him back." },
+    { name: "Pigpatch", desc: "He climbs through the overhead duct system toward your office. Use the audio lure or the heater to ward him off." },
+    { name: "Nedd Bear", desc: "He climbs through the overhead duct system. He is only fooled by the audio lure 50% of the time, but the heater works on him." },
+    { name: "Orville Elephant", desc: "He climbs through the ducts. He is rarely fooled by the audio lure (10%), so you must use the heater to keep him away." },
+    { name: "Rockstar Freddy", desc: "He will occasionally stand up and demand five Faz-coins. If you don't pay him, he will jumpscare you. You can also use the heater to make him malfunction." },
+    { name: "Rockstar Bonnie", desc: "He occasionally appears in your office. You must find his guitar on the cameras to make him leave." },
+    { name: "Rockstar Chica", desc: "She stands outside either door. Double-click the 'Wet Floor' sign to move it to the door she is standing at to prevent her from entering." },
+    { name: "Rockstar Foxy", desc: "His parrot will occasionally fly through the office. Click it and he will offer you help, but be careful; he might be in a bad mood." },
+    { name: "Music Man", desc: "He sits behind you and is sensitive to noise. If you make too much noise for too long, he will begin to clash his cymbals faster and faster until he attacks." },
+    { name: "El Chip", desc: "He doesn't attack, but he will constantly interrupt you with loud, colorful advertisements for his restaurant." },
+    { name: "Funtime Chica", desc: "She doesn't attack, but she will occasionally appear to distract you by posing and flashing her camera lights." },
+    { name: "Molten Freddy", desc: "He climbs through the vent system. Listen for his laugh and close the vent door to block his attack." },
+    { name: "Scrap Baby", desc: "She will appear on the other side of your desk. When she moves or looks up at you, give her a controlled shock to send her away." },
+    { name: "William Afton", desc: "He attacks once per night from the right vent. When you hear a loud clatter and see the lights flicker, quickly close the right vent door." },
+    { name: "Lefty", desc: "He sits in the Supply Closet and is sensitive to noise and heat. Keep both low, or use the Global Music Box to keep him calm." },
+    { name: "Phone Guy", desc: "He will call your office at random. Quickly click the 'Mute Call' button or press Enter to end the noisy call." }
 ];
 
 // Configuración
@@ -158,6 +158,14 @@ function initMenu() {
 
         rosterGrid.appendChild(slot);
     }
+
+    // El tooltip sigue al mouse solo en el menú
+    document.addEventListener('mousemove', (e) => {
+        if (!menuEl.classList.contains('hidden')) {
+            updateTooltipPos(e);
+        }
+    });
+
     updateScore();
     bgmMenu.load();
     const tryPlayMenuMusic = () => {
@@ -183,11 +191,24 @@ function showTooltip(idx) {
     if (!char) return;
     document.getElementById('tooltip-name').innerText = char.name;
     document.getElementById('tooltip-desc').innerText = char.desc;
-    tooltipEl.classList.remove('hidden');
+    tooltipEl.style.display = 'flex';
 }
 
 function hideTooltip() {
-    tooltipEl.classList.add('hidden');
+    tooltipEl.style.display = 'none';
+}
+
+function updateTooltipPos(e) {
+    let x = e.clientX + 15;
+    let y = e.clientY + 15;
+
+    // Evitar que se salga por la derecha
+    if (x + 320 > window.innerWidth) x = e.clientX - 330;
+    // Evitar que se salga por abajo
+    if (y + 150 > window.innerHeight) y = e.clientY - 160;
+
+    tooltipEl.style.left = x + 'px';
+    tooltipEl.style.top = y + 'px';
 }
 
 function adjustLevel(index, amount) {
