@@ -88,9 +88,10 @@ let state = {
     timeSeconds: 0,
     timeDeciseconds: 0,
     doors: { left: false, right: false, top: false, side: false },
-    omc: { active: false, fishPos: 0, fishDir: 1, timer: 0 },
-    monitorDisabled: 0, // Segundos que le quedan al monitor bloqueado
-    freddyPos: 0, // 0: Lejos, 1: Cerca, 2: En la puerta
+    omc: { active: false, fishPos: 0, fishDir: 1, timer: 0, nextTrigger: -1 },
+    monitorDisabled: 0,
+    ventCooldown: 0, // Cooldown para evitar bugs de spam de ventilación
+    freddyPos: 0,
     freddyTimer: 0
 };
 
@@ -540,7 +541,10 @@ function gameTick() {
     if (!state.fan && state.temp < 120) state.temp += 1;
 
     // AI TICKS
+    omcTick();
     freddyAI();
+
+    if (state.ventCooldown > 0) state.ventCooldown--;
 }
 
 function omcTick() {
@@ -561,13 +565,18 @@ function omcTick() {
             failOMC();
         }
     } else {
-        // Intento de aparición aleatoria (OMC RECARGADO - cada 100ms)
-        // 50% base + 1.3% por nivel
-        if (state.monitor && Math.random() < 0.005) { // Check aprox cada 2s
-            const chance = 0.50 + (level * 0.013);
-            if (Math.random() < chance) {
-                triggerOMC();
-            }
+        // OMC PROGRAMADO (A cierta hora según dificultad)
+        if (state.omc.nextTrigger === -1) {
+            // Nivel 20: ~60s (1 AM)
+            // Nivel 1: ~220s (5 AM)
+            state.omc.nextTrigger = Math.max(20, 240 - (level * 9));
+            console.log("OMC programado para el segundo: " + state.omc.nextTrigger);
+        }
+
+        if (state.timeSeconds >= state.omc.nextTrigger && state.monitor) {
+            triggerOMC();
+            // Reprogramar para más tarde si el nivel es alto
+            state.omc.nextTrigger = state.timeSeconds + Math.max(40, 120 - (level * 4));
         }
     }
 
@@ -676,9 +685,11 @@ function fastUpdateTick() {
 }
 
 function ventCheckTick() {
-    // Probabilidad reducida para evitar "bugs" de spam y hacerlo más balanceado (aprox cada 40s)
-    if (!state.ventilationBroken && Math.random() < 0.12) {
+    if (state.ventCooldown > 0) return;
+
+    if (!state.ventilationBroken && Math.random() < 0.10) {
         triggerVentilationFailure();
+        state.ventCooldown = 30; // 30 segundos de paz antes del próximo fallo
     }
 }
 
