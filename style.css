@@ -712,23 +712,30 @@ a,
     z-index: 3000;
 }
 
-#win-screen h1,
-#new-highscore-screen h1 {
-    margin-bottom: 5px;
+#win-screen,
+#new-highscore-screen {
+    gap: 10px;
 }
 
 .did-it {
-    font-size: 2em;
-    font-weight: bold;
+    font-size: 2.5em;
+    font-weight: 900;
     color: white;
-    margin-top: 10px;
+    margin-top: 20px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.tally-score {
+    font-size: 3em;
+    color: #ddd;
+    margin: 0;
 }
 
 /* RANK LABELS */
 .rank-label {
-    font-size: 4em;
+    font-size: 5.5em;
     font-weight: 900;
-    margin: 10px 0;
+    margin: 0;
     text-transform: uppercase;
     font-style: italic;
     min-height: 1.2em;
@@ -736,14 +743,14 @@ a,
 
 .rank-great {
     color: #ffdbac;
-    /* Piel */
-    text-shadow: 2px 2px 5px red;
+    text-shadow: 4px 4px 0px #800;
 }
 
 .rank-fantastic {
     background: linear-gradient(90deg, #00f, #8a2be2, #00f);
     background-size: 200% auto;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: rank-gradient 2s linear infinite;
 }
@@ -752,6 +759,7 @@ a,
     background: linear-gradient(90deg, #0f0, #006400, #0f0);
     background-size: 200% auto;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: rank-gradient 2s linear infinite;
 }
@@ -760,6 +768,7 @@ a,
     background: linear-gradient(90deg, #ff007f, #ff8c00, #ffff00, #00008b, #ff007f);
     background-size: 400% auto;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: rank-gradient 3s linear infinite;
 }
@@ -768,6 +777,7 @@ a,
     background: linear-gradient(90deg, #ffffff, #e6b3ff, #ffffff);
     background-size: 200% auto;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: rank-gradient 2s linear infinite;
 }
@@ -776,6 +786,7 @@ a,
     background: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
     background-size: 200% auto;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: rank-gradient 1.5s linear infinite;
 }
@@ -785,6 +796,7 @@ a,
         background-position: 200% center;
     }
 }
+
 
 .menu-back-btn {
     margin-top: 20px;

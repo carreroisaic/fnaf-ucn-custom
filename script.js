@@ -412,32 +412,31 @@ function winGame() {
         document.getElementById('win-screen').classList.remove('hidden');
     }
 
-    startScoreTally(isHigh ? 'final-score-disp' : 'win-score-disp', isHigh ? 'evaluation-label-high' : 'evaluation-label', isHigh);
+    startScoreTally(isHigh ? 'final-score-disp' : 'win-score-disp', isHigh ? 'high-rank' : 'win-rank', isHigh);
 }
 
-function startScoreTally(scoreId, labelId, isHigh) {
+function startScoreTally(scoreId, rankId, isHigh) {
     let targetScore = currentScore;
     let currentDisplayScore = 0;
     let scoreEl = document.getElementById(scoreId);
-    let labelEl = document.getElementById(labelId);
+    let rankEl = document.getElementById(rankId);
     let winAudio = isHigh ? sfxWinHigh : sfxWinNormal;
 
     winAudio.play();
 
-    let step = Math.max(1, Math.floor(targetScore / 100)); // Unos 100 pasos para el conteo
+    let step = Math.max(5, Math.floor(targetScore / 120));
     let interval = setInterval(() => {
         currentDisplayScore += step;
         if (currentDisplayScore >= targetScore) {
             currentDisplayScore = targetScore;
             clearInterval(interval);
-            // Teletransportar música a los últimos 4 segundos
             if (winAudio.duration > 4) {
                 winAudio.currentTime = winAudio.duration - 4;
             }
         }
         scoreEl.innerText = "Score: " + currentDisplayScore;
-        updateRankLabel(labelEl, currentDisplayScore);
-    }, 30);
+        updateRankLabel(rankEl, currentDisplayScore);
+    }, 20);
 }
 
 function updateRankLabel(el, score) {
