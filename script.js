@@ -132,6 +132,9 @@ let currentBgm = null;
 const sfxWinNormal = document.getElementById('sfx-win-normal');
 const sfxWinHigh = document.getElementById('sfx-win-highscore');
 const sfxMask = document.getElementById('sfx-mask');
+const sfxOmcAppear = document.getElementById('sfx-omc-appear');
+const sfxOmcSuccess = document.getElementById('sfx-omc-success');
+const sfxOmcFail = document.getElementById('sfx-omc-fail');
 
 const doorsEl = {
     left: document.getElementById('door-left'),
@@ -466,7 +469,24 @@ function toggleMask() {
 }
 
 function toggleMonitor() {
-    if (state.mask || state.paused || state.monitorDisabled > 0) return;
+    if (state.mask || state.paused) return;
+
+    // Si el monitor está deshabilitado por OMC
+    if (state.monitorDisabled > 0) {
+        const bar = document.getElementById('monitor-toggle-bar');
+        if (bar) {
+            const originalText = bar.innerText;
+            bar.innerText = "ERROR";
+            bar.style.color = "red";
+            setTimeout(() => {
+                bar.innerText = originalText;
+                bar.style.color = "white";
+            }, 500);
+        }
+        try { sfxOmcFail.currentTime = 0; sfxOmcFail.play(); } catch (e) { }
+        return;
+    }
+
     state.monitor = !state.monitor;
     monitorEl.className = state.monitor ? '' : 'monitor-hidden';
     if (state.monitor) {
@@ -483,6 +503,9 @@ function toggleMonitor() {
 // --- TICKS DEL SISTEMA ---
 
 function powerTick() {
+    // AI Ticks más rápidos para OMC (100ms)
+    omcTick();
+
     let usage = 1;
     if (state.fan) usage++;
     if (state.flashlight) usage++;
@@ -517,7 +540,6 @@ function gameTick() {
     if (!state.fan && state.temp < 120) state.temp += 1;
 
     // AI TICKS
-    omcTick();
     freddyAI();
 }
 
@@ -539,10 +561,10 @@ function omcTick() {
             failOMC();
         }
     } else {
-        // Intento de aparición aleatoria (OMC RECARGADO)
-        // Requisito: 50% base + 1.3% por nivel
-        if (state.monitor && Math.random() < 0.01) { // Checkeo cada 100ms aprox si monitor abierto
-            const chance = 0.50 + (level * 0.013); // 50% base + 1.3% * nivel
+        // Intento de aparición aleatoria (OMC RECARGADO - cada 100ms)
+        // 50% base + 1.3% por nivel
+        if (state.monitor && Math.random() < 0.005) { // Check aprox cada 2s
+            const chance = 0.50 + (level * 0.013);
             if (Math.random() < chance) {
                 triggerOMC();
             }
@@ -564,13 +586,15 @@ function triggerOMC() {
     state.omc.fishDir = 1;
     state.omc.timer = 0;
     document.getElementById('omc-minigame').classList.remove('hidden');
+    try { sfxOmcAppear.currentTime = 0; sfxOmcAppear.play(); } catch (e) { }
 }
 
 function catchFish() {
-    // Catch zone está en 45% - 55%
+    // Catch zone está en 40% - 60%
     if (state.omc.fishPos >= 40 && state.omc.fishPos <= 60) {
         state.omc.active = false;
         document.getElementById('omc-minigame').classList.add('hidden');
+        try { sfxOmcSuccess.currentTime = 0; sfxOmcSuccess.play(); } catch (e) { }
         console.log("FISH CAUGHT!");
     }
 }
@@ -580,7 +604,7 @@ function failOMC() {
     document.getElementById('omc-minigame').classList.add('hidden');
     state.monitorDisabled = 10; // 10 segundos bloqueado
     if (state.monitor) toggleMonitor();
-    alert("MONITOR DISABLED BY OMC!");
+    try { sfxOmcFail.currentTime = 0; sfxOmcFail.play(); } catch (e) { }
 }
 
 function freddyAI() {
