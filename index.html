@@ -43,6 +43,12 @@
         <div id="audio-hint">Haz clic en cualquier lugar para activar el sonido 🔊</div>
         <div id="roster-grid"></div>
 
+        <!-- Tooltip de Descripción -->
+        <div id="menu-tooltip" class="hidden">
+            <h3 id="tooltip-name">Nombre</h3>
+            <p id="tooltip-desc">Descripción...</p>
+        </div>
+
         <div id="side-panel">
             <div id="difficulty-controls">
                 <button onclick="setAll(0)">SET ALL 0</button>
@@ -164,16 +170,15 @@
 
     <!-- Win Screens -->
     <div id="win-screen" class="hidden">
-        <h1 id="win-rank" class="rank-label">GREAT JOB!</h1>
+        <h1 class="did-it-title">YOU DID IT!</h1>
         <h2 id="win-score-disp" class="tally-score">Score: 0</h2>
-        <p class="did-it">YOU DID IT!</p>
         <button class="menu-back-btn" onclick="location.reload()">MENU</button>
     </div>
 
     <div id="new-highscore-screen" class="hidden">
         <h1 id="high-rank" class="rank-label">GREAT JOB!</h1>
         <h2 id="final-score-disp" class="tally-score">Score: 0</h2>
-        <p class="did-it">YOU DID IT!</p>
+        <p class="did-it-bottom">YOU DID IT!</p>
         <button class="menu-back-btn" onclick="location.reload()">MENU</button>
     </div>
 

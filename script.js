@@ -1,3 +1,57 @@
+// Character Data
+const CHAR_DATA = [
+    { name: "Freddy Fazbear", desc: "Approaches from the left hall. Close the door when he is at the opening. Moves faster with heat." },
+    { name: "Bonnie", desc: "Shares Pirate's Cove with Foxy. Don't look at him on cameras, or he will disable them." },
+    { name: "Chica", desc: "Stays in the kitchen. Change the music box selection when you hear her clanging pots and pans." },
+    { name: "Foxy", desc: "View his cove frequently to inhibit his advance." },
+    { name: "Toy Freddy", desc: "Playing 'Mr. Hugs' on CAM-08. Don't let him lose or he'll jumpscare you." },
+    { name: "Toy Bonnie", desc: "Enters through the right vent. Use the Freddy mask to fool him." },
+    { name: "Toy Chica", desc: "Enters through the left vent. Use the Freddy mask to fool her." },
+    { name: "Mangle", desc: "Travels through the vent system. Use the vent snare to block it." },
+    { name: "Balloon Boy", desc: "Enters through the side vent. Close the vent to block him or he'll disable your light." },
+    { name: "JJ", desc: "Enters through the side vent. Close to block or she'll disable door controls." },
+    { name: "Withered Chica", desc: "Vent crawler. Use the vent snare or close the vent door." },
+    { name: "Withered Bonnie", desc: "Appears in your office. Put on the mask quickly to send him away." },
+    { name: "The Marionette", desc: "Wind the Music Box on CAM-04 or she will attack." },
+    { name: "Golden Freddy", desc: "Appears when you put the monitor down. Mask or pull monitor back up!" },
+    { name: "Springtrap", desc: "Approaches through the top vent. Close it when you see his face." },
+    { name: "Phantom Mangle", desc: "Appears on cameras. Close monitor or switch cams to avoid noise distortion." },
+    { name: "Phantom Freddy", desc: "Appears in the office. Shine your light at him to dispel him." },
+    { name: "Phantom BB", desc: "Appears on cameras. Close monitor or switch cams to avoid a jumpscare." },
+    { name: "Nightmare Freddy", desc: "Use your flashlight to scare away the Freddles that sit on your desk." },
+    { name: "Nightmare Bonnie", desc: "Buy his plushie from the Prize Counter when he appears on cameras." },
+    { name: "Nightmare Fredbear", desc: "Invisible at doors. Listen for his laugh and close the corresponding door." },
+    { name: "Nightmare", desc: "Same as Nightmare Fredbear but more aggressive. Close the right door on laugh." },
+    { name: "Jack-O-Chica", desc: "Appears in both doors when the office is hot. Cool it down to make her leave." },
+    { name: "Nightmare Mangle", desc: "Buy her plushie from the Prize Counter when she appears." },
+    { name: "Nightmarionne", desc: "Moves towards your cursor. Keep it away from him to survive!" },
+    { name: "Nightmare BB", desc: "Shine your light only when he stands up. If he stays sitting, leave him be." },
+    { name: "Old Man Consequences", desc: "Press 'C' to catch a fish in his minigame or be locked out of cameras." },
+    { name: "Circus Baby", desc: "Buy her plushie from the Prize Counter when she approaches." },
+    { name: "Ballora", desc: "Listen for her music and close the door she's approaching from." },
+    { name: "Funtime Foxy", desc: "Check his stage to see when his showtime is. Be on camera exactly on the hour!" },
+    { name: "Ennard", desc: "Approaches through the vents. Listen for the squeaking metal cue." },
+    { name: "Trash and the Gang", desc: "Temporary distractions that block your view or make noise." },
+    { name: "Helpy", desc: "Click him quickly or he'll blast an air horn in your face!" },
+    { name: "Happy Frog", desc: "Duct crawler. 100% fooled by audio lures. Immune to heater." },
+    { name: "Mr. Hippo", desc: "Duct crawler. Fooled by audio lures and pushed by heater." },
+    { name: "Pigpatch", desc: "Duct crawler. Fooled by audio lures and pushed by heater." },
+    { name: "Nedd Bear", desc: "Duct crawler. Sometimes fooled by audio lures (50%)." },
+    { name: "Orville Elephant", desc: "Duct crawler. Rarely fooled by audio lures (10%). Use heater." },
+    { name: "Rockstar Freddy", desc: "Asks for 5 Faz-coins. Pay him or heat the office to glitch him." },
+    { name: "Rockstar Bonnie", desc: "Find his guitar on cameras when he appears in your office." },
+    { name: "Rockstar Chica", desc: "Place the 'Wet Floor' sign on the side she is approaching." },
+    { name: "Rockstar Foxy", desc: "Click his parrot for help, but there's a risk of a jumpscare!" },
+    { name: "Music Man", desc: "Keep the noise down, or he will eventually jumpscare you." },
+    { name: "El Chip", desc: "Interrupts with loud ads. Press Enter or click Skip to close them." },
+    { name: "Funtime Chica", desc: "Appears to distract you with camera flashes and poses." },
+    { name: "Molten Freddy", desc: "Approaches through the vents. Listen for his laugh and close the door." },
+    { name: "Scrap Baby", desc: "Sitting at the desk. Shock her if she moves or looks up." },
+    { name: "William Afton", desc: "Attacks once per night. Listen for a loud crash and flickering lights." },
+    { name: "Lefty", desc: "Agitated by noise and heat. Keep them low to keep him away." },
+    { name: "Phone Guy", desc: "Mute his call or it will create constant noise for several seconds." }
+];
+
 // Configuración
 const TOTAL_ANIMATRONICS = 50;
 const NIGHT_LENGTH_SECONDS = 270;
@@ -58,6 +112,7 @@ const monitorEl = document.getElementById('camera-monitor');
 const camImgEl = document.getElementById('cam-img');
 const camLabelEl = document.getElementById('cam-label');
 const pauseMenuEl = document.getElementById('pause-menu');
+const tooltipEl = document.getElementById('menu-tooltip');
 
 // Audio
 const bgmMenu = document.getElementById('bgm-menu');
@@ -93,8 +148,14 @@ function initMenu() {
         levelDisplay.className = 'ai-level';
         levelDisplay.innerText = '0';
         slot.appendChild(levelDisplay);
+
         slot.addEventListener('click', (e) => adjustLevel(i, 1));
         slot.addEventListener('contextmenu', (e) => { e.preventDefault(); adjustLevel(i, -1); });
+
+        // Tooltip hover
+        slot.addEventListener('mouseenter', () => showTooltip(i));
+        slot.addEventListener('mouseleave', hideTooltip);
+
         rosterGrid.appendChild(slot);
     }
     updateScore();
@@ -115,6 +176,18 @@ function initMenu() {
     document.querySelectorAll('.cam-btn').forEach(btn => {
         btn.addEventListener('click', () => switchCam(btn.dataset.cam));
     });
+}
+
+function showTooltip(idx) {
+    const char = CHAR_DATA[idx];
+    if (!char) return;
+    document.getElementById('tooltip-name').innerText = char.name;
+    document.getElementById('tooltip-desc').innerText = char.desc;
+    tooltipEl.classList.remove('hidden');
+}
+
+function hideTooltip() {
+    tooltipEl.classList.add('hidden');
 }
 
 function adjustLevel(index, amount) {
@@ -422,21 +495,30 @@ function startScoreTally(scoreId, rankId, isHigh) {
     let rankEl = document.getElementById(rankId);
     let winAudio = isHigh ? sfxWinHigh : sfxWinNormal;
 
-    winAudio.play();
+    // Reset initial state
+    scoreEl.innerText = "Score: 0";
+    if (rankEl) {
+        rankEl.innerText = "GREAT JOB!";
+        rankEl.className = "rank-label rank-great";
+    }
 
-    let step = Math.max(5, Math.floor(targetScore / 120));
+    try { winAudio.play(); } catch (e) { }
+
+    let step = Math.max(1, Math.floor(targetScore / 100));
     let interval = setInterval(() => {
         currentDisplayScore += step;
         if (currentDisplayScore >= targetScore) {
             currentDisplayScore = targetScore;
             clearInterval(interval);
-            if (winAudio.duration > 4) {
-                winAudio.currentTime = winAudio.duration - 4;
-            }
+            try {
+                if (winAudio.duration > 4) {
+                    winAudio.currentTime = winAudio.duration - 4;
+                }
+            } catch (e) { }
         }
         scoreEl.innerText = "Score: " + currentDisplayScore;
         updateRankLabel(rankEl, currentDisplayScore);
-    }, 20);
+    }, 25);
 }
 
 function updateRankLabel(el, score) {
