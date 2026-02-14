@@ -190,7 +190,7 @@ function startIntervals() {
     gameInterval = setInterval(gameTick, 1000);
     powerInterval = setInterval(powerTick, 100);
     tempInterval = setInterval(tempTick, 500);
-    ventInterval = setInterval(ventCheckTick, 5000); // 5 segundos
+    ventInterval = setInterval(ventCheckTick, 5000);
     fastUpdateInterval = setInterval(fastUpdateTick, 100);
 }
 
@@ -403,16 +403,55 @@ function winGame() {
     stopIntervals();
     if (currentBgm) currentBgm.pause();
 
-    if (currentScore > highScore) {
+    let isHigh = currentScore > (parseInt(localStorage.getItem('fnaf_ucn_highscore')) || 0);
+    if (isHigh) {
         highScore = currentScore;
         localStorage.setItem('fnaf_ucn_highscore', highScore);
         document.getElementById('new-highscore-screen').classList.remove('hidden');
-        document.getElementById('final-score-disp').innerText = "Score: " + currentScore;
-        sfxWinHigh.play();
     } else {
         document.getElementById('win-screen').classList.remove('hidden');
-        sfxWinNormal.play();
     }
+
+    startScoreTally(isHigh ? 'final-score-disp' : 'win-score-disp', isHigh ? 'evaluation-label-high' : 'evaluation-label', isHigh);
+}
+
+function startScoreTally(scoreId, labelId, isHigh) {
+    let targetScore = currentScore;
+    let currentDisplayScore = 0;
+    let scoreEl = document.getElementById(scoreId);
+    let labelEl = document.getElementById(labelId);
+    let winAudio = isHigh ? sfxWinHigh : sfxWinNormal;
+
+    winAudio.play();
+
+    let step = Math.max(1, Math.floor(targetScore / 100)); // Unos 100 pasos para el conteo
+    let interval = setInterval(() => {
+        currentDisplayScore += step;
+        if (currentDisplayScore >= targetScore) {
+            currentDisplayScore = targetScore;
+            clearInterval(interval);
+            // Teletransportar música a los últimos 4 segundos
+            if (winAudio.duration > 4) {
+                winAudio.currentTime = winAudio.duration - 4;
+            }
+        }
+        scoreEl.innerText = "Score: " + currentDisplayScore;
+        updateRankLabel(labelEl, currentDisplayScore);
+    }, 30);
+}
+
+function updateRankLabel(el, score) {
+    let rank = "";
+    let className = "rank-label ";
+    if (score < 2000) { rank = "GREAT JOB!"; className += "rank-great"; }
+    else if (score < 4000) { rank = "FANTASTIC!"; className += "rank-fantastic"; }
+    else if (score < 6000) { rank = "AMAZING!"; className += "rank-amazing"; }
+    else if (score < 8000) { rank = "STUPENDOUS!"; className += "rank-stupendous"; }
+    else if (score < 10000) { rank = "PERFECT!"; className += "rank-perfect"; }
+    else { rank = "UNBEATABLE!"; className += "rank-unbeatable"; }
+
+    el.innerText = rank;
+    el.className = className;
 }
 
 initMenu();

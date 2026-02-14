@@ -712,6 +712,80 @@ a,
     z-index: 3000;
 }
 
+#win-screen h1,
+#new-highscore-screen h1 {
+    margin-bottom: 5px;
+}
+
+.did-it {
+    font-size: 2em;
+    font-weight: bold;
+    color: white;
+    margin-top: 10px;
+}
+
+/* RANK LABELS */
+.rank-label {
+    font-size: 4em;
+    font-weight: 900;
+    margin: 10px 0;
+    text-transform: uppercase;
+    font-style: italic;
+    min-height: 1.2em;
+}
+
+.rank-great {
+    color: #ffdbac;
+    /* Piel */
+    text-shadow: 2px 2px 5px red;
+}
+
+.rank-fantastic {
+    background: linear-gradient(90deg, #00f, #8a2be2, #00f);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rank-gradient 2s linear infinite;
+}
+
+.rank-amazing {
+    background: linear-gradient(90deg, #0f0, #006400, #0f0);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rank-gradient 2s linear infinite;
+}
+
+.rank-stupendous {
+    background: linear-gradient(90deg, #ff007f, #ff8c00, #ffff00, #00008b, #ff007f);
+    background-size: 400% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rank-gradient 3s linear infinite;
+}
+
+.rank-perfect {
+    background: linear-gradient(90deg, #ffffff, #e6b3ff, #ffffff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rank-gradient 2s linear infinite;
+}
+
+.rank-unbeatable {
+    background: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rank-gradient 1.5s linear infinite;
+}
+
+@keyframes rank-gradient {
+    to {
+        background-position: 200% center;
+    }
+}
+
 .menu-back-btn {
     margin-top: 20px;
     padding: 10px 20px;
@@ -719,6 +793,7 @@ a,
     color: white;
     border: 1px solid white;
 }
+
 
 /* FLASHLIGHT OVERLAY */
 #flashlight-overlay {
