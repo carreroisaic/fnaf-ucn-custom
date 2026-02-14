@@ -43,6 +43,13 @@
         <div id="audio-hint">Haz clic en cualquier lugar para activar el sonido 🔊</div>
         <div id="roster-grid"></div>
 
+        <!-- Tooltip de Descripción -->
+        <div id="menu-tooltip">
+            <h3 id="tooltip-name"></h3>
+            <p id="tooltip-desc"></p>
+        </div>
+
+
         <div id="side-panel">
             <div id="difficulty-controls">
                 <button onclick="setAll(0)">SET ALL 0</button>
@@ -55,6 +62,11 @@
             <div id="score-display">
                 <div class="score-row">High Score: <span id="high-score-val">0</span></div>
                 <div class="score-row">Point Value: <span id="point-value">0</span></div>
+            </div>
+
+            <div id="info-toggle-container">
+                <span>SHOW CHAR INFO:</span>
+                <input type="checkbox" id="char-info-toggle" checked>
             </div>
 
             <button id="go-button" onclick="showInstructions()">GO!</button>
