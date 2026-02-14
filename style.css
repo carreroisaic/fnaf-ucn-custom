@@ -1005,58 +1005,30 @@ a,
 
 /* MONITOR TOGGLE BAR */
 #monitor-toggle-bar {
-    position: absolute;
+    position: fixed;
     bottom: 0;
-    left: 20%;
-    width: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
     height: 35px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.4);
     border-bottom: none;
-    z-index: 10000;
+    z-index: 10005;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
     font-weight: 900;
-    letter-spacing: 10px;
+    letter-spacing: 5px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, height 0.2s;
+    user-select: none;
 }
 
 #monitor-toggle-bar:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* OLD MAN CONSEQUENCES */
-#omc-minigame {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(150, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 15000;
-}
-
-#omc-content {
-    background: #000;
-    border: 4px solid #f00;
-    padding: 20px;
-    width: 400px;
-    text-align: center;
-    box-shadow: 0 0 20px #f00;
-    color: #f00;
-}
-
-#omc-header {
-    font-size: 2vw;
-    font-weight: bold;
-    margin-bottom: 20px;
-    letter-spacing: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    height: 45px;
 }
 
 #cam-view {
@@ -1064,42 +1036,28 @@ a,
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #050505;
-    /* Fondo para que no sea negro total si falla la imagen */
+    background: #000;
 }
 
-#omc-pond {
-    position: relative;
-    width: 100%;
-    height: 80px;
-    background: #200;
-    border: 2px solid #500;
-    margin: 20px 0;
-    overflow: hidden;
-}
-
-#omc-catch-zone {
-    position: absolute;
-    top: 0;
-    left: 45%;
-    width: 10%;
-    height: 100%;
-    background: rgba(255, 0, 0, 0.3);
-    border-left: 2px solid #f00;
-    border-right: 2px solid #f00;
-}
-
-#omc-fish {
+#kitchen-overlay {
     position: absolute;
     top: 50%;
-    left: 0%;
-    transform: translateY(-50%);
-    font-size: 30px;
-    will-change: left;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: red;
+    z-index: 5;
+    pointer-events: none;
 }
 
-#omc-footer {
-    font-size: 1.2vw;
-    margin-top: 10px;
-    animation: blink 0.5s infinite alternate;
+#kitchen-overlay h1 {
+    font-size: 4vw;
+    margin: 0;
+    letter-spacing: 5px;
+    font-weight: 900;
+}
+
+#kitchen-overlay p {
+    font-size: 1.5vw;
+    margin-top: 5px;
 }

@@ -88,13 +88,10 @@ let state = {
     timeSeconds: 0,
     timeDeciseconds: 0,
     doors: { left: false, right: false, top: false, side: false },
-    omc: { active: false, fishPos: 0, fishDir: 1, timer: 0, nextTrigger: -1 },
     monitorDisabled: 0,
     ventCooldown: 0,
     puppetBox: 100.0,
-    winding: false,
-    freddyPos: 0,
-    freddyTimer: 0
+    winding: false
 };
 
 // DOM ELEMENTS
@@ -126,6 +123,7 @@ const loadingScreen = document.getElementById('loading-screen');
 const musicBoxUI = document.getElementById('music-box-ui');
 const boxMeterFill = document.getElementById('box-meter-fill');
 const monitorToggleBar = document.getElementById('monitor-toggle-bar');
+const kitchenOverlay = document.getElementById('kitchen-overlay');
 
 // AUDIO ELEMENTS
 const bgmMenu = document.getElementById('bgm-menu');
@@ -224,9 +222,9 @@ function initMenu() {
     };
     ["click", "keydown", "mousedown", "touchstart"].forEach(evt => document.addEventListener(evt, tryPlayMenuMusic));
 
-    // Monitor Toggle Bar
+    // Monitor Toggle Bar - Click para mayor confiabilidad
     if (monitorToggleBar) {
-        monitorToggleBar.addEventListener('mouseenter', toggleMonitor);
+        monitorToggleBar.addEventListener('click', toggleMonitor);
     }
 
     // Puppet Winding
@@ -364,10 +362,9 @@ function startGame() {
 
 function startIntervals() {
     gameInterval = setInterval(gameTick, 1000);
-    powerInterval = setInterval(powerTick, 100);
-    tempInterval = setInterval(tempTick, 500);
-    ventInterval = setInterval(ventCheckTick, 5000);
     fastUpdateInterval = setInterval(fastUpdateTick, 100);
+    // Unificamos todo el sistema de juego aquí para evitar que se pegue
+    powerInterval = setInterval(systemTick, 100);
 }
 
 function stopIntervals() {
@@ -418,15 +415,8 @@ function handleInput(e) {
             updateFlashlightVisuals(lastMouseX, lastMouseY);
         }
     }
-    // Monitor: Solo con S ahora para evitar conflictos con C de OMC
-    if (e.code === 'KeyS') {
-        toggleMonitor();
-    }
 
-    // Pescar: Solo si OMC está activo
-    if (e.code === 'KeyC' && state.omc.active) {
-        catchFish();
-    }
+    if (e.code === 'KeyS') toggleMonitor();
 
     if (e.code === 'KeyA') toggleDoor('left');
     if (e.code === 'KeyD') toggleDoor('right');
@@ -492,24 +482,9 @@ function toggleMask() {
 function toggleMonitor() {
     if (state.mask || state.paused) return;
 
-    // Si el monitor está deshabilitado por OMC
-    if (state.monitorDisabled > 0) {
-        const bar = document.getElementById('monitor-toggle-bar');
-        if (bar) {
-            const originalText = bar.innerText;
-            bar.innerText = "ERROR";
-            bar.style.color = "red";
-            setTimeout(() => {
-                bar.innerText = originalText;
-                bar.style.color = "white";
-            }, 500);
-        }
-        try { sfxOmcFail.currentTime = 0; sfxOmcFail.play(); } catch (e) { }
-        return;
-    }
-
     state.monitor = !state.monitor;
     monitorEl.className = state.monitor ? '' : 'monitor-hidden';
+
     if (state.monitor) {
         state.flashlight = false;
         updateFlashlightVisuals(0, 0, true);
@@ -523,33 +498,58 @@ function toggleMonitor() {
 
 // --- TICKS DEL SISTEMA ---
 
-function powerTick() {
-    if (state.paused) return;
-    // AI Ticks más rápidos para OMC
-    omcTick();
+// --- TICKS DEL SISTEMA ---
 
+function systemTick() {
+    if (state.paused) return;
+
+    // 1. Energía y Temperatura
     let usage = 1;
     if (state.fan) usage++;
     if (state.flashlight) usage++;
     if (state.monitor) usage++;
-    if (state.doors.left) usage++;
-    if (state.doors.right) usage++;
-    if (state.doors.top) usage++;
-    if (state.doors.side) usage++;
+    Object.keys(state.doors).forEach(d => { if (state.doors[d]) usage++; });
     state.usage = usage;
-
-    state.power -= usage * 0.012;
+    state.power -= usage * 0.0014; // Balanceado
     if (state.power <= 0) { state.power = 0; gameOverPower(); }
 
     powerValEl.innerText = Math.floor(state.power);
     let bars = ""; for (let i = 0; i < usage; i++) bars += "█"; usageBarsEl.innerText = bars;
-}
 
-function tempTick() {
-    if (state.paused) return;
-    if (state.fan && state.temp > 60) state.temp--;
-    tempEl.innerText = state.temp + "°";
+    // Temperatura
+    if (state.fan && state.temp > 60) state.temp -= 0.15;
+    else if (!state.fan && state.temp < 120) state.temp += 0.08;
+    tempEl.innerText = Math.floor(state.temp) + "°";
     tempEl.classList.toggle('critical', state.temp >= 100);
+
+    // 2. Puppet Logic (Índice 14: Marionette)
+    const level = roster[14];
+    if (level > 0) {
+        if (state.winding) {
+            state.puppetBox = Math.min(100, state.puppetBox + 1.8);
+        } else {
+            state.puppetBox -= (0.012 + (level * 0.009));
+        }
+
+        if (state.monitor && String(state.currentCam) === "3") {
+            if (boxMeterFill) boxMeterFill.style.width = state.puppetBox + "%";
+            if (musicBoxUI) musicBoxUI.classList.remove('hidden');
+        } else {
+            if (musicBoxUI) musicBoxUI.classList.add('hidden');
+        }
+
+        if (state.puppetBox <= 0) {
+            state.puppetBox = 0;
+            triggerJumpscare(14);
+        }
+    }
+
+    // 3. Ventilación
+    if (state.ventCooldown > 0) state.ventCooldown -= 0.1;
+    if (!state.ventilationBroken && state.ventCooldown <= 0 && Math.random() < 0.0015) {
+        triggerVentilationFailure();
+        state.ventCooldown = 40;
+    }
 }
 
 function gameTick() {
@@ -557,154 +557,8 @@ function gameTick() {
     state.timeSeconds++;
     let hour = Math.floor((state.timeSeconds / NIGHT_LENGTH_SECONDS) * 6);
     timerEl.innerText = (hour == 0 ? "12" : hour) + " AM";
-
     if (state.timeSeconds >= NIGHT_LENGTH_SECONDS) { winGame(); return; }
-
-    // Aumento de temperatura si el fan está apagado
-    if (!state.fan && state.temp < 120) state.temp += 1;
-
-    // AI TICKS
-    omcTick();
-    puppetTick();
-    freddyAI();
-
-    if (state.ventCooldown > 0) state.ventCooldown--;
 }
-
-function omcTick() {
-    const level = roster[26]; // OMC es el índice 26 (Freddy=0... Puppet=12... OMC=26)
-    if (level === 0) return;
-
-    if (state.omc.active) {
-        // Mover pez
-        state.omc.fishPos += 3 * state.omc.fishDir;
-        if (state.omc.fishPos > 95 || state.omc.fishPos < 0) {
-            state.omc.fishDir *= -1;
-        }
-        document.getElementById('omc-fish').style.left = state.omc.fishPos + '%';
-
-        // Timer de fallo (si tarda más de 10 segundos = 100 ticks de 100ms)
-        state.omc.timer++;
-        if (state.omc.timer > 100) {
-            failOMC();
-        }
-    } else {
-        // OMC PROGRAMADO (A cierta hora según dificultad)
-        if (state.omc.nextTrigger === -1) {
-            // Nivel 20: 30s | Nivel 1: 230s
-            state.omc.nextTrigger = 240 - (level * 10.5);
-            console.log("OLD MAN PROGRAMADO: segundo " + Math.floor(state.omc.nextTrigger));
-        }
-
-        // Si ya pasó la hora y tenemos el monitor abierto
-        if (state.timeSeconds >= state.omc.nextTrigger && state.monitor && !state.omc.active) {
-            triggerOMC();
-            // Reprogramar para 50s después si sigue activo
-            state.omc.nextTrigger = state.timeSeconds + 50;
-        }
-    }
-
-    // Monitor bloqueado
-    if (state.monitorDisabled > 0) {
-        state.monitorDisabled--;
-        if (state.monitorDisabled === 0) {
-            console.log("Monitor habilitado");
-        }
-    }
-}
-
-function triggerOMC() {
-    state.omc.active = true;
-    state.omc.fishPos = 0;
-    state.omc.fishDir = 1;
-    state.omc.timer = 0;
-    document.getElementById('omc-minigame').classList.remove('hidden');
-    try { sfxOmcAppear.currentTime = 0; sfxOmcAppear.play(); } catch (e) { }
-}
-
-function catchFish() {
-    // Catch zone está en 40% - 60%
-    if (state.omc.fishPos >= 40 && state.omc.fishPos <= 60) {
-        state.omc.active = false;
-        document.getElementById('omc-minigame').classList.add('hidden');
-        try { sfxOmcSuccess.currentTime = 0; sfxOmcSuccess.play(); } catch (e) { }
-        console.log("FISH CAUGHT!");
-    }
-}
-
-function failOMC() {
-    state.omc.active = false;
-    document.getElementById('omc-minigame').classList.add('hidden');
-    state.monitorDisabled = 10; // 10 segundos bloqueado
-    if (state.monitor) toggleMonitor();
-    try { sfxOmcFail.currentTime = 0; sfxOmcFail.play(); } catch (e) { }
-}
-
-function puppetTick() {
-    const level = roster[12]; // Puppet es el índice 12
-    if (level === 0) {
-        state.puppetBox = 100;
-        return;
-    }
-
-    if (state.winding) {
-        state.puppetBox = Math.min(100, state.puppetBox + 1.2);
-    } else {
-        // Cae más rápido según nivel de IA
-        state.puppetBox -= (0.05 + (level * 0.015));
-    }
-
-    // Actualizar Visuales si el monitor está abierto
-    if (state.monitor) {
-        if (boxMeterFill) boxMeterFill.style.width = state.puppetBox + "%";
-        // Mostrar UI solo en CAM 03 (KITCHEN)
-        if (String(state.currentCam) === "3") {
-            musicBoxUI.classList.remove('hidden');
-        } else {
-            musicBoxUI.classList.add('hidden');
-        }
-    } else {
-        musicBoxUI.classList.add('hidden');
-    }
-
-    if (state.puppetBox <= 0) {
-        state.puppetBox = 0;
-        triggerJumpscare(12);
-    }
-}
-
-function freddyAI() {
-    const level = roster[0]; // Freddy es el índice 0
-    if (level === 0) return;
-
-    // Freddy se mueve cada 3 segundos aprox base
-    // Si la temperatura es alta (>100), se mueve el doble de rápido
-    let moveThreshold = (state.temp > 100) ? 2 : 4;
-
-    state.freddyTimer++;
-    if (state.freddyTimer >= moveThreshold) {
-        state.freddyTimer = 0;
-
-        // Intento de movimiento basado en nivel
-        if (Math.random() * 20 < level) {
-            if (state.freddyPos < 2) {
-                state.freddyPos++;
-                console.log("Freddy avanzó a pos: " + state.freddyPos);
-            } else {
-                // Está en la puerta
-                if (state.doors.left) {
-                    // Puerta cerrada, Freddy retrocede
-                    state.freddyPos = 0;
-                    console.log("Freddy rebotó en la puerta");
-                } else {
-                    // JUMPSCARE
-                    triggerJumpscare(0);
-                }
-            }
-        }
-    }
-}
-
 function triggerJumpscare(animIndex) {
     stopIntervals();
     if (currentBgm) currentBgm.pause();
@@ -777,13 +631,18 @@ function switchCam(id) {
     state.currentCam = id;
     const cam = CAM_DATA[id];
 
-    // UI Especial Kitchen/Caja de Música
+    // Limpieza visual global
+    camImgEl.style.display = 'block';
+    if (kitchenOverlay) kitchenOverlay.classList.add('hidden');
+    if (musicBoxUI) musicBoxUI.classList.add('hidden');
+
     if (String(id) === "3") {
         camImgEl.style.display = 'none';
-        camLabelEl.innerHTML = `CAM 03 - ${cam.name}<br><span style="color:red; font-size: 0.8em; letter-spacing: 2px;">- CAMERA DISABLED - AUDIO ONLY -</span>`;
+        camLabelEl.innerText = `CAM 03 - KITCHEN`;
+        if (kitchenOverlay) kitchenOverlay.classList.remove('hidden');
+        if (musicBoxUI) musicBoxUI.classList.remove('hidden'); // Puppet UI en cocina
     } else {
-        camImgEl.style.display = 'block';
-        camImgEl.src = cam.img;
+        camImgEl.src = cam ? cam.img : "";
         camLabelEl.innerText = "CAM 0" + id + " - " + (cam ? cam.name : "");
         camImgEl.onerror = () => { camImgEl.style.display = 'none'; };
     }
